@@ -1,7 +1,7 @@
 <?php
 // Include the common database connection file
 include '../includes/db_connection.php';
-
+sessions_start();
 // Fetch concessions from the database
 $sql = "SELECT C.ID, RT.Name AS RevenueType, C.Product
         FROM Concession AS C
@@ -37,7 +37,9 @@ $result = $conn->query($sql);
                 <td><?php echo $row['Product']; ?></td>
                 <td>
                     <a href="update_concession.php?id=<?php echo $row['ID']; ?>">Update</a> |
-                    <a href="delete_concession.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php if ($_SESSION['role'] === 'Admin') : ?>
+                        <a href="delete_concession.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>

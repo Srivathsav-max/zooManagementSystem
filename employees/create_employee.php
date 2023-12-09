@@ -20,7 +20,6 @@ $zooAdmissionsResult = $conn->query($zooAdmissionsSql);
 
 // Handle form submission for creating a new employee
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
-    $startDate = $_POST["startDate"];
     $jobType = $_POST["jobType"];
     $firstName = $_POST["firstName"];
     $middleName = $_POST["middleName"];
@@ -34,11 +33,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
     $concessionID = $_POST["concessionID"];
     $zooAdmissionID = $_POST["zooAdmissionID"];
 
-    // Insert the new employee details into the database
-    $sql = "INSERT INTO Employee (StartDate, JobType, FirstName, MiddleName, LastName, Street, City, State, Zip, SuperID, HourlyRateID, ConcessionID, ZooAdmissionID)
+    // Generate username and password based on first name and last name
+    $username = strtolower($firstName . $lastName);
+    $password = $firstName . $lastName;  // You can enhance this for better security
+
+    // Set the role as the job type
+    $role = $jobType;
+
+    // Set the StartDate to the current date
+    $startDate = date("Y-m-d");
+
+    // Insert the new employee details into the Employee table
+    $employeeSql = "INSERT INTO Employee (StartDate, JobType, FirstName, MiddleName, LastName, Street, City, State, Zip, SuperID, HourlyRateID, ConcessionID, ZooAdmissionID)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param(
+    $stmtEmployee = $conn->prepare($employeeSql);
+    $stmtEmployee->bind_param(
         "ssssssssiiiii",
         $startDate,
         $jobType,
@@ -54,12 +63,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
         $concessionID,
         $zooAdmissionID
     );
-    $stmt->execute();
-    $stmt->close();
+    $stmtEmployee->execute();
+    $stmtEmployee->close();
 
-    echo "Employee created successfully.";
+    // Insert the new user details into the Users table
+    $userSql = "INSERT INTO Users (Username, Password, Role)
+            VALUES (?, ?, ?)";
+    $stmtUser = $conn->prepare($userSql);
+    $stmtUser->bind_param("sss", $username, $password, $role);
+    $stmtUser->execute();
+    $stmtUser->close();
+
+    echo "Employee and user created successfully.";
 }
 ?>
+
+<!-- ... (rest of the HTML code) ... -->
+
+
+<!-- ... (rest of the HTML code) ... -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -73,13 +96,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
 
     <!-- Employee creation form -->
     <form method="post" action="">
-        <!-- Add form fields for employee details -->
-
-        <label for="startDate">Start Date:</label>
-        <input type="text" name="startDate" required><br>
 
         <label for="jobType">Job Type:</label>
-        <input type="text" name="jobType" required><br>
+        <select name="jobType" required>
+            <option value="Veterinarian">Veterinarian</option>
+            <option value="Animal Care Specialist">Animal Care Specialist</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Customer Service">Customer Service</option>
+            <option value="Ticket Seller">Ticket Seller</option>
+        </select><br>
 
         <label for="firstName">First Name:</label>
         <input type="text" name="firstName" required><br>

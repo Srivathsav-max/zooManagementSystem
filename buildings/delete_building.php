@@ -2,6 +2,18 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// Check if the user is an admin, otherwise deny access
+if ($_SESSION['role'] !== 'Admin') {
+    echo "Access denied. Only admins can delete animals.";
+    exit();
+}
+
 // Handle the deletion of the building based on the ID from the query parameters
 if (isset($_GET['id'])) {
     $buildingId = $_GET['id'];

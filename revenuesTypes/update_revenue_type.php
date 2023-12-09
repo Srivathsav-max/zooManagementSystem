@@ -6,6 +6,9 @@ include '../includes/db_connection.php';
 $buildingSql = "SELECT ID, Name FROM Building";
 $buildingResult = $conn->query($buildingSql);
 
+// Define allowed revenue types
+$allowedRevenueTypes = ['Animal Show', 'Concession', 'Zoo Admission'];
+
 // Check if an ID is provided in the URL
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
@@ -24,6 +27,12 @@ if (isset($_GET['id'])) {
         $name = $_POST["name"];
         $type = $_POST["type"];
         $buildingId = $_POST["buildingId"];
+
+        // Check if the submitted revenue type is allowed
+        if (!in_array($type, $allowedRevenueTypes)) {
+            echo "Invalid revenue type. Please select a valid type.";
+            exit();
+        }
 
         // Prepare and execute the SQL statement to update the revenue type
         $updateSql = "UPDATE RevenueType SET Name = ?, Type = ?, BuildingID = ? WHERE ID = ?";
@@ -55,7 +64,13 @@ if (isset($_GET['id'])) {
         <input type="text" name="name" value="<?php echo $revenueType['Name']; ?>" required><br>
 
         <label for="type">Type:</label>
-        <input type="text" name="type" value="<?php echo $revenueType['Type']; ?>" required><br>
+        <select name="type" required>
+            <?php foreach ($allowedRevenueTypes as $allowedType) : ?>
+                <option value="<?php echo $allowedType; ?>" <?php echo ($allowedType == $revenueType['Type']) ? 'selected' : ''; ?>>
+                    <?php echo $allowedType; ?>
+                </option>
+            <?php endforeach; ?>
+        </select><br>
 
         <label for="buildingId">Building:</label>
         <select name="buildingId" required>

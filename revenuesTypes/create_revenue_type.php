@@ -6,11 +6,20 @@ include '../includes/db_connection.php';
 $buildingSql = "SELECT ID, Name FROM Building";
 $buildingResult = $conn->query($buildingSql);
 
+// Define allowed revenue types
+$allowedRevenueTypes = ['Animal Show', 'Concession', 'Zoo Admission'];
+
 // Handle revenue type creation form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createRevenueType"])) {
     $name = $_POST["name"];
     $type = $_POST["type"];
     $buildingId = $_POST["buildingId"];
+
+    // Check if the submitted revenue type is allowed
+    if (!in_array($type, $allowedRevenueTypes)) {
+        echo "Invalid revenue type. Please select a valid type.";
+        exit();
+    }
 
     $createSql = "INSERT INTO RevenueType (Name, Type, BuildingID) VALUES (?, ?, ?)";
     $createStmt = $conn->prepare($createSql);
@@ -39,7 +48,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createRevenueType"])) 
         <input type="text" name="name" required><br>
 
         <label for="type">Type:</label>
-        <input type="text" name="type" required><br>
+        <select name="type" required>
+            <?php foreach ($allowedRevenueTypes as $allowedType) : ?>
+                <option value="<?php echo $allowedType; ?>"><?php echo $allowedType; ?></option>
+            <?php endforeach; ?>
+        </select><br>
 
         <label for="buildingId">Building:</label>
         <select name="buildingId" required>

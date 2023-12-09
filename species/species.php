@@ -1,3 +1,21 @@
+<?php
+// Include the common database connection file
+include '../includes/db_connection.php';
+
+// Check if the user is not logged in, redirect to login page
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// Check if the user is an admin, otherwise deny access
+if ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Manager') {
+    echo "Access denied. Only admins can access this page.";
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

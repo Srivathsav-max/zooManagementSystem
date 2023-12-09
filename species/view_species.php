@@ -2,6 +2,8 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
+session_start();
+
 // Fetch species
 $sql = "SELECT * FROM Species";
 $result = $conn->query($sql);
@@ -23,6 +25,7 @@ $result = $conn->query($sql);
             <th>ID</th>
             <th>Name</th>
             <th>Food Cost</th>
+            <th>Actions</th>
         </tr>
         <?php
         while ($species = $result->fetch_assoc()) :
@@ -31,6 +34,12 @@ $result = $conn->query($sql);
                 <td><?php echo $species['ID']; ?></td>
                 <td><?php echo $species['Name']; ?></td>
                 <td><?php echo $species['FoodCost']; ?></td>
+                <td>
+                    <a href="update_species.php?id=<?php echo $species['ID']; ?>">Update</a> |
+                    <?php if ($_SESSION['role'] === 'Admin') : ?>
+                        <a href="delete_species.php?id=<?php echo $species['ID']; ?>">Delete</a>
+                    <?php endif; ?>
+                </td>
             </tr>
         <?php endwhile; ?>
     </table>

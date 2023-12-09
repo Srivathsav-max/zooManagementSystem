@@ -2,6 +2,9 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
+// Start the session
+session_start();
+
 // Fetch animals with related information from referenced tables
 $sql = "SELECT Animal.ID, Animal.Status, Animal.BirthYear, Species.Name AS SpeciesName, Enclosure.ID AS EnclosureID, Building.Name AS BuildingName
         FROM Animal
@@ -48,7 +51,9 @@ $result = $conn->query($sql);
                 <td>
                     <a href="view_animal.php?id=<?php echo $row['ID']; ?>">View</a> |
                     <a href="update_animal.php?id=<?php echo $row['ID']; ?>">Update</a> |
-                    <a href="delete_animal.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php if ($_SESSION['role'] === 'Admin') : ?>
+                        <a href="delete_animal.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>

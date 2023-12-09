@@ -58,6 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createUser"])) {
         <select name="role" id="role">
             <option value="Admin">Admin</option>
             <option value="User">User</option>
+            <option value="Manager">Manager</option>
             <!-- Add more options if needed -->
         </select>
 

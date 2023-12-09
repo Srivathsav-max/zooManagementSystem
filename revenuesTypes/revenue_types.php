@@ -1,7 +1,7 @@
 <?php
 // Include the common database connection file
 include '../includes/db_connection.php';
-
+session_start();
 // Fetch revenue types with related building information
 $sql = "SELECT RevenueType.ID, RevenueType.Name, RevenueType.Type, Building.Name AS BuildingName
         FROM RevenueType
@@ -42,7 +42,9 @@ $result = $conn->query($sql);
                 <td>
                     <a href="view_revenue_type.php?id=<?php echo $row['ID']; ?>">View</a> |
                     <a href="update_revenue_type.php?id=<?php echo $row['ID']; ?>">Update</a> |
-                    <a href="delete_revenue_type.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php if ($_SESSION['role'] === 'Admin') : ?>
+                        <a href="delete_revenue_type.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>

@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 // Check if the user is an admin, otherwise deny access
-if ($_SESSION['role'] !== 'Admin') {
+if ($_SESSION['role'] !== 'Admin' && $_SESSION['role'] !== 'Manager') {
     echo "Access denied. Only admins can access this page.";
     exit();
 }

@@ -11,26 +11,26 @@ if (!isset($_SESSION['username'])) {
 
 // Check if the user is an admin, otherwise deny access
 if ($_SESSION['role'] !== 'Admin') {
-    echo "Access denied. Only admins can delete animals.";
+    echo "Access denied. Only admins can access this page.";
     exit();
 }
 
-// Handle the deletion of the animal based on the ID from the query parameters
+// Handle the deletion of the enclosure based on the ID from the query parameters
 if (isset($_GET['id'])) {
-    $animalId = $_GET['id'];
+    $enclosureId = $_GET['id'];
 
-    // Perform the necessary database operations to delete the animal
-    $deleteSql = "DELETE FROM Animal WHERE ID = ?";
+    // Perform the necessary database operations to delete the enclosure
+    $deleteSql = "DELETE FROM Enclosure WHERE ID = ?";
     $deleteStmt = $conn->prepare($deleteSql);
-    $deleteStmt->bind_param("i", $animalId);
+    $deleteStmt->bind_param("i", $enclosureId);
     $deleteStmt->execute();
     $deleteStmt->close();
 
-    echo "Animal deleted successfully.";
+    echo "Enclosure deleted successfully.";
 } else {
     echo "Invalid request.";
 }
 
-header("Location: view_animals.php");
+header("Location: enclosure.php");
 exit();
 ?>

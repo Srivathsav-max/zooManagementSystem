@@ -67,6 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateUser"])) {
         <select name="role" id="role">
             <option value="Admin" <?= ($user['Role'] === 'Admin') ? 'selected' : ''; ?>>Admin</option>
             <option value="User" <?= ($user['Role'] === 'User') ? 'selected' : ''; ?>>User</option>
+            <option value="Manager" <?= ($user['Role'] === 'Manager') ? 'selected' : ''; ?>>Manager</option>
             <!-- Add more options if needed -->
         </select>
         <button type="submit" name="updateUser">Update Role</button>

@@ -1,7 +1,7 @@
 <?php
 // Include the common database connection file
 include '../includes/db_connection.php';
-
+session_start();
 // Fetch zoo admissions from the database
 $sql = "SELECT ZooAdmission.ID, RevenueType.Name AS RevenueTypeName, SeniorPrice, AdultPrice, ChildPrice 
         FROM ZooAdmission
@@ -42,7 +42,9 @@ $result = $conn->query($sql);
                 <td>
                     <a href="view_zoo_admission.php?id=<?php echo $row['ID']; ?>">View</a> |
                     <a href="update_zoo_admission.php?id=<?php echo $row['ID']; ?>">Update</a> |
-                    <a href="delete_zoo_admission.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php if ($_SESSION['role'] === 'Admin') : ?>
+                        <a href="delete_zoo_admission.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>
