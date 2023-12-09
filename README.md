@@ -1,3 +1,4 @@
+```
 CREATE TABLE Employee (
   EmployeeID INT PRIMARY KEY AUTO_INCREMENT,
   StartDate VARCHAR(255) NOT NULL,
@@ -105,3 +106,4 @@ CREATE TABLE AttendanceDaily (
   Attendance INT NOT NULL,
   Revenue INT NOT NULL
 );
+```
