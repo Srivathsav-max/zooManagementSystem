@@ -1,57 +1,69 @@
 <?php
-// Include the common database connection file
-include '../includes/db_connection.php';
+// Check if the form is submitted
+if (isset($_POST['generateTopDaysReport'])) {
+    // Get the selected month from the form
+    $selectedMonth = $_POST['selectedMonth'];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateBestDaysReport"])) {
-    $selectedMonth = $_POST["selectedMonth"];
+    // Replace with your database credentials
+    $servername = "localhost";
+    $username = "root";
+    $password = "";
+    $dbname = "zoo";
 
-    // Assuming tables AnimalShowTickets, ZooAdmissionTickets, and DailyConcessionRevenue
-    $query = "SELECT DATE(CheckoutTime) AS SaleDate, SUM(Revenue) AS CombinedRevenue
-              FROM (
-                SELECT CheckoutTime, Revenue
-                FROM AnimalShowTickets
-                WHERE YEAR(CheckoutTime) = YEAR(?) AND MONTH(CheckoutTime) = MONTH(?)
-                UNION ALL
-                SELECT CheckoutTime, Revenue
-                FROM ZooAdmissionTickets
-                WHERE YEAR(CheckoutTime) = YEAR(?) AND MONTH(CheckoutTime) = MONTH(?)
-                UNION ALL
-                SELECT SaleDate, Revenue
-                FROM DailyConcessionRevenue
-                WHERE YEAR(SaleDate) = YEAR(?) AND MONTH(SaleDate) = MONTH(?)
-              ) AS CombinedSales
-              GROUP BY SaleDate
-              ORDER BY CombinedRevenue DESC
-              LIMIT 5";
+    // Create connection
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssss", $selectedMonth, $selectedMonth, $selectedMonth, $selectedMonth, $selectedMonth, $selectedMonth);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    // Display the report
-    echo "<h2>Top 5 Revenue Days for $selectedMonth</h2>";
-
-    // Check if there are rows in the result set
-    if ($result->num_rows > 0) {
-        echo "<table border='1'>";
-        echo "<tr><th>Sale Date</th><th>Total Revenue</th></tr>";
-
-        while ($row = $result->fetch_assoc()) {
-            echo "<tr>";
-            echo "<td>{$row['SaleDate']}</td>";
-            echo "<td>{$row['CombinedRevenue']}</td>";
-            echo "</tr>";
-        }
-
-        echo "</table>";
-    } else {
-        echo "<p>No data available for the selected month.</p>";
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
     }
 
-    echo "<a href='best_days_report_form.php'>Back to Report Form</a>";
+    // Execute the query to set the target month
+    $sql1 = "SET @target_month = '$selectedMonth';";
+    $conn->query($sql1);
 
-    $stmt->close();
+    // Execute the query to find the 5 best days in terms of total revenue
+    $sql2 = "
+        SELECT
+            DATE(TransactionDate) AS TransactionDate,
+            SUM(Revenue) AS TotalRevenue
+        FROM (
+            SELECT
+                DATE(CheckoutTime) AS TransactionDate,
+                Revenue
+            FROM ZooAdmissionTickets
+            WHERE DATE_FORMAT(CheckoutTime, '%Y-%m') = @target_month
+            UNION ALL
+            SELECT
+                DATE(CheckoutTime) AS TransactionDate,
+                Revenue
+            FROM AnimalShowTickets
+            WHERE DATE_FORMAT(CheckoutTime, '%Y-%m') = @target_month
+            UNION ALL
+            SELECT
+                SaleDate AS TransactionDate,
+                Revenue
+            FROM DailyConcessionRevenue
+            WHERE DATE_FORMAT(SaleDate, '%Y-%m') = @target_month
+        ) AS CombinedRevenue
+        GROUP BY TransactionDate
+        ORDER BY TotalRevenue DESC
+        LIMIT 5;
+    ";
+
+    $result = $conn->query($sql2);
+
+    if ($result->num_rows > 0) {
+        echo "<h2>Top Days Revenue Report for $selectedMonth</h2>";
+        echo "<table border='1'><tr><th>Date</th><th>Total Revenue</th></tr>";
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr><td>" . $row["TransactionDate"] . "</td><td>" . $row["TotalRevenue"] . "</td></tr>";
+        }
+        echo "</table>";
+    } else {
+        echo "No results found.";
+    }
+
     $conn->close();
 }
 ?>
