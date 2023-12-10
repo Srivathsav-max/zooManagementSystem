@@ -29,6 +29,12 @@ if (!in_array($userRole, $allowedRoles)) {
     exit();
 }
 
+// Get the logged-in username
+$loggedInUsername = $_SESSION['username'];
+
+// Get the server's system time
+$currentTime = date("Y-m-d H:i:s");
+
 ?>
 
 <!DOCTYPE html>
@@ -40,6 +46,9 @@ if (!in_array($userRole, $allowedRoles)) {
 </head>
 <body>
     <h1>Asset Management System</h1>
+
+    <!-- Display logged-in username and current time -->
+    <p>Welcome, <?php echo $loggedInUsername; ?>! Current Time (Server): <?php echo $currentTime; ?>! Role: <?php echo $userRole; ?></p>
 
     <!-- Logout form -->
     <form method="post" action="">

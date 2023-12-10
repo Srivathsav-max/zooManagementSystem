@@ -1,7 +1,8 @@
 <?php
 // Include the common database connection file
 include '../includes/db_connection.php';
-sessions_start();
+// Start the session
+session_start();
 // Fetch concessions from the database
 $sql = "SELECT C.ID, RT.Name AS RevenueType, C.Product
         FROM Concession AS C
