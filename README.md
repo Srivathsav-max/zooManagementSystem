@@ -120,5 +120,11 @@ CREATE TABLE DailyConcessionRevenue (
   Revenue DECIMAL(10, 2) NOT NULL,
   SaleDate DATE NOT NULL DEFAULT CURRENT_DATE
 );
-
+CREATE TABLE users (
+  UserID int(11) NOT NULL AUTO_INCREMENT,
+  Username varchar(255) NOT NULL,
+  Password varchar(255) NOT NULL,
+  Role varchar(50) NOT NULL,
+  PRIMARY KEY (UserID)
+);
 ```
