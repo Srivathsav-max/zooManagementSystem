@@ -15,6 +15,69 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Employee Management</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 15px;
+            margin: 0;
+            text-align: center;
+        }
+
+        a {
+            display: inline-block;
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            margin: 15px;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 5px;
+            width: 150px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4caf50;
+            color: #fff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        td a {
+            color: #4caf50;
+            text-decoration: none;
+        }
+
+        td a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h2>Employee Management</h2>
@@ -22,7 +85,7 @@ $result = $conn->query($sql);
     <a href="create_employee.php">Create New Employee</a>
 
     <!-- Display a paginated list of employees with links to view, update, and delete -->
-    <table border="1">
+    <table>
         <tr>
             <th>Employee ID</th>
             <th>Start Date</th>
@@ -60,8 +123,8 @@ $result = $conn->query($sql);
                 <td><?php echo $row['ZooAdmissionID']; ?></td>
                 <!-- Display more columns as needed -->
                 <td>
-                    <a href="view_employee.php?id=<?php echo $row['EmployeeID']; ?>">View</a> |
-                    <a href="update_employee.php?id=<?php echo $row['EmployeeID']; ?>">Update</a> |
+                    <a href="view_employee.php?id=<?php echo $row['EmployeeID']; ?>">View</a>
+                    <a href="update_employee.php?id=<?php echo $row['EmployeeID']; ?>">Update</a>
                     <a href="delete_employee.php?id=<?php echo $row['EmployeeID']; ?>">Delete</a>
                 </td>
             </tr>
@@ -69,3 +132,4 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
+

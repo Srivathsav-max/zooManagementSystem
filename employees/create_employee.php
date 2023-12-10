@@ -90,6 +90,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Employee</title>
+    <style>
+        
+    </style>
 </head>
 <body>
     <h2>Create Employee</h2>
@@ -151,12 +154,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
         </select><br>
 
         <label for="zooAdmissionID">Zoo Admission:</label>
-        <select name="zooAdmissionID">
-            <option value="">None</option>
-            <?php while ($zooAdmission = $zooAdmissionsResult->fetch_assoc()) : ?>
-                <option value="<?php echo $zooAdmission['ID']; ?>"></option>
-            <?php endwhile; ?>
-        </select><br>
+    <select name="zooAdmissionID">
+        <option value="">None</option>
+        <?php
+        // Reset the pointer of the result set to the beginning
+        $zooAdmissionsResult->data_seek(0);
+        while ($zooAdmission = $zooAdmissionsResult->fetch_assoc()) : ?>
+            <option value="<?php echo $zooAdmission['ID']; ?>"><?php echo $zooAdmission['ID']; ?></option>
+        <?php endwhile; ?>
+    </select><br>
 
         <button type="submit" name="createEmployee">Create Employee</button>
     </form>
