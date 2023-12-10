@@ -94,7 +94,7 @@ CREATE TABLE ParticipatesIN (
 );
 CREATE TABLE ZooAdmissionTickets (
   TicketID INT PRIMARY KEY AUTO_INCREMENT,
-  AnimalShowID INT REFERENCES AnimalShow(ID),
+  ZooAdmissionID INT REFERENCES ZooAdmission(ID),
   AdultTickets INT NOT NULL,
   ChildTickets INT NOT NULL,
   SeniorTickets INT NOT NULL,
@@ -114,5 +114,17 @@ CREATE TABLE AnimalShowTickets (
   Revenue DECIMAL(10, 2) NOT NULL,
   CheckoutTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+CREATE TABLE DailyConcessionRevenue (
+  RecordID INT PRIMARY KEY AUTO_INCREMENT,
+  ConcessionID INT REFERENCES Concession(ID),
+  Revenue DECIMAL(10, 2) NOT NULL,
+  SaleDate DATE NOT NULL DEFAULT CURRENT_DATE
+);
+CREATE TABLE users (
+  UserID int(11) NOT NULL AUTO_INCREMENT,
+  Username varchar(255) NOT NULL,
+  Password varchar(255) NOT NULL,
+  Role varchar(50) NOT NULL,
+  PRIMARY KEY (UserID)
+);
 ```
