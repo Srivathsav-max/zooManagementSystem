@@ -2,11 +2,54 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
-// Fetch revenue events from the database
-$sql = "SELECT * FROM RevenueEvents";
-$result = $conn->query($sql);
+// Fetch total attendance and revenue for Animal Shows
+$animalShowSql = "SELECT SUM(Attendance) AS TotalAttendance, SUM(Revenue) AS TotalRevenue FROM AnimalShowTickets";
+$animalShowResult = $conn->query($animalShowSql);
+$animalShowData = $animalShowResult->fetch_assoc();
 
-// Display a list of revenue events with links to view, update, and delete
+// Fetch total attendance and revenue for Zoo Admission Tickets
+$zooAdmissionSql = "SELECT SUM(Attendance) AS TotalAttendance, SUM(Revenue) AS TotalRevenue FROM ZooAdmissionTickets";
+$zooAdmissionResult = $conn->query($zooAdmissionSql);
+$zooAdmissionData = $zooAdmissionResult->fetch_assoc();
+
+// Fetch existing revenue events for displaying in the table
+$revenueEventsSql = "SELECT * FROM RevenueEvents";
+$revenueEventsResult = $conn->query($revenueEventsSql);
+
+// Flag to check if an entry for the current date exists
+$entryExists = false;
+
+while ($row = $revenueEventsResult->fetch_assoc()) {
+    // Check if an entry for the current date exists
+    if ($row['DateTime'] == date('Y-m-d')) {
+        $entryExists = true;
+        break;
+    }
+}
+
+// Handle the form submission to update RevenueEvents
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateRevenueEvents"])) {
+    $totalCombinedAttendance = $animalShowData['TotalAttendance'] + $zooAdmissionData['TotalAttendance'];
+    $totalCombinedRevenue = $animalShowData['TotalRevenue'] + $zooAdmissionData['TotalRevenue'];
+
+    // Insert the combined attendance and revenue into RevenueEvents
+    if ($entryExists) {
+        // Update existing entry for the current date
+        $updateSql = "UPDATE RevenueEvents SET Revenue = ?, TicketsSold = ? WHERE DateTime = ?";
+        $updateStmt = $conn->prepare($updateSql);
+        $updateStmt->bind_param("ids", $totalCombinedRevenue, $totalCombinedAttendance, date('Y-m-d'));
+        $updateStmt->execute();
+        $updateStmt->close();
+    } else {
+        // Insert a new entry for the current date
+        $insertSql = "INSERT INTO RevenueEvents (ID, DateTime, Revenue, TicketsSold) VALUES (?, CURRENT_TIMESTAMP, ?, ?)";
+        $insertStmt = $conn->prepare($insertSql);
+        $insertStmt->bind_param("ids", $totalCombinedAttendance, $totalCombinedRevenue, $totalCombinedAttendance);
+        $insertStmt->execute();
+        $insertStmt->close();
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -14,12 +57,26 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revenue Events Management</title>
+    <title>Total Attendance and Revenue</title>
 </head>
 <body>
-    <h2>Revenue Events Management</h2>
+    <h2>Total Attendance and Revenue</h2>
 
-    <a href="create_revenue_event.php">Create New Revenue Event</a>
+    <h3>Animal Shows</h3>
+    <p>Total Attendance: <?php echo $animalShowData['TotalAttendance']; ?></p>
+    <p>Total Revenue: <?php echo $animalShowData['TotalRevenue']; ?></p>
+
+    <h3>Zoo Admission Tickets</h3>
+    <p>Total Attendance: <?php echo $zooAdmissionData['TotalAttendance']; ?></p>
+    <p>Total Revenue: <?php echo $zooAdmissionData['TotalRevenue']; ?></p>
+
+    <h3>Total Combined</h3>
+    <p>Total Combined Attendance: <?php echo $animalShowData['TotalAttendance'] + $zooAdmissionData['TotalAttendance']; ?></p>
+    <p>Total Combined Revenue: <?php echo $animalShowData['TotalRevenue'] + $zooAdmissionData['TotalRevenue']; ?></p>
+
+    <form method="post" action="">
+        <button type="submit" name="updateRevenueEvents">Update Revenue Events</button>
+    </form>
 
     <!-- Display a paginated list of revenue events with links to view, update, and delete -->
     <table border="1">
@@ -32,7 +89,13 @@ $result = $conn->query($sql);
             <th>Actions</th>
         </tr>
 
-        <?php while ($row = $result->fetch_assoc()) : ?>
+        <?php
+        // Fetch and display revenue events
+        $revenueEventsSql = "SELECT * FROM RevenueEvents";
+        $revenueEventsResult = $conn->query($revenueEventsSql);
+
+        while ($row = $revenueEventsResult->fetch_assoc()) :
+        ?>
             <tr>
                 <td><?php echo $row['ID']; ?></td>
                 <td><?php echo $row['DateTime']; ?></td>

@@ -2,35 +2,44 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateBestDaysReport"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateTopDaysReport"])) {
     $selectedMonth = $_POST["selectedMonth"];
 
-    // Assuming tables RevenueEvents
-    $query = "SELECT 
-                DATE(DateTime) AS Day,
-                SUM(Revenue) AS TotalRevenue
-              FROM RevenueEvents
-              WHERE MONTH(DateTime) = ?
-              GROUP BY Day
+    // Assuming tables AnimalShowTickets, ZooAdmissionTickets, and DailyConcessionRevenue
+    $query = "SELECT SaleDate, SUM(Revenue) AS TotalRevenue
+              FROM (
+                SELECT CheckoutTime AS SaleDate, Revenue
+                FROM AnimalShowTickets
+                WHERE MONTH(CheckoutTime) = ?
+                UNION
+                SELECT CheckoutTime AS SaleDate, Revenue
+                FROM ZooAdmissionTickets
+                WHERE MONTH(CheckoutTime) = ?
+                UNION
+                SELECT SaleDate, Revenue
+                FROM DailyConcessionRevenue
+                WHERE MONTH(SaleDate) = ?
+              ) AS CombinedSales
+              GROUP BY SaleDate
               ORDER BY TotalRevenue DESC
               LIMIT 5";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $selectedMonth);
+    $stmt->bind_param("sss", $selectedMonth, $selectedMonth, $selectedMonth);
     $stmt->execute();
     $result = $stmt->get_result();
 
     // Display the report
-    echo "<h2>Best 5 Days Report for $selectedMonth</h2>";
+    echo "<h2>Top 5 Revenue Days for $selectedMonth</h2>";
 
     // Check if there are rows in the result set
     if ($result->num_rows > 0) {
         echo "<table border='1'>";
-        echo "<tr><th>Day</th><th>Total Revenue</th></tr>";
+        echo "<tr><th>Sale Date</th><th>Total Revenue</th></tr>";
 
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>{$row['Day']}</td>";
+            echo "<td>{$row['SaleDate']}</td>";
             echo "<td>{$row['TotalRevenue']}</td>";
             echo "</tr>";
         }

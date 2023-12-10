@@ -16,5 +16,7 @@
         <input type="date" name="endDate" required>
         <button type="submit" name="generateAverageRevenueReport">Generate Report</button>
     </form>
+
+    <p><a href="index.php">Back to Home</a></p>
 </body>
 </html>

@@ -6,13 +6,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateTopAttractions
     $startDate = $_POST["startDate"];
     $endDate = $_POST["endDate"];
 
-    // Assuming tables RevenueEvents and Building
+    // Assuming the table is AnimalShowTickets
     $query = "SELECT 
-                BuildingID, 
+                AnimalShowID, 
                 SUM(Revenue) AS TotalRevenue
-              FROM RevenueEvents
-              WHERE DateTime BETWEEN ? AND ?
-              GROUP BY BuildingID
+              FROM AnimalShowTickets
+              WHERE CheckoutTime BETWEEN ? AND ?
+              GROUP BY AnimalShowID
               ORDER BY TotalRevenue DESC
               LIMIT 3";
 
@@ -31,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateTopAttractions
 
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>{$row['BuildingID']}</td>";
+            echo "<td>{$row['AnimalShowID']}</td>";
             echo "<td>{$row['TotalRevenue']}</td>";
             echo "</tr>";
         }
