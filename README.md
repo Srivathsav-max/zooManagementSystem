@@ -92,18 +92,27 @@ CREATE TABLE ParticipatesIN (
   AnimalShowID INT REFERENCES AnimalShow(ID),
   Reqd INT NOT NULL
 );
-CREATE TABLE AttractionsDaily (
-  ID INT PRIMARY KEY AUTO_INCREMENT,
-  AttractionName VARCHAR(255) NOT NULL,
-  Date DATE NOT NULL,
+CREATE TABLE ZooAdmissionTickets (
+  TicketID INT PRIMARY KEY AUTO_INCREMENT,
+  AnimalShowID INT REFERENCES AnimalShow(ID),
+  AdultTickets INT NOT NULL,
+  ChildTickets INT NOT NULL,
+  SeniorTickets INT NOT NULL,
+  Price DECIMAL(10, 2) NOT NULL,
   Attendance INT NOT NULL,
-  Revenue INT NOT NULL
+  Revenue DECIMAL(10, 2) NOT NULL,
+  CheckoutTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE AnimalShowTickets (
+  TicketID INT PRIMARY KEY AUTO_INCREMENT,
+  AnimalShowID INT REFERENCES AnimalShow(ID),
+  AdultTickets INT NOT NULL,
+  ChildTickets INT NOT NULL,
+  SeniorTickets INT NOT NULL,
+  Price DECIMAL(10, 2) NOT NULL,
+  Attendance INT NOT NULL,
+  Revenue DECIMAL(10, 2) NOT NULL,
+  CheckoutTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE AttendanceDaily (
-  ID INT PRIMARY KEY AUTO_INCREMENT,
-  Date DATE NOT NULL,
-  Attendance INT NOT NULL,
-  Revenue INT NOT NULL
-);
 ```
