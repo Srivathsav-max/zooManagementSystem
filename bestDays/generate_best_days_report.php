@@ -1,22 +1,11 @@
 <?php
+// Include the database connection file
+include '../includes/db_connection.php';
+
 // Check if the form is submitted
 if (isset($_POST['generateTopDaysReport'])) {
     // Get the selected month from the form
     $selectedMonth = $_POST['selectedMonth'];
-
-    // Replace with your database credentials
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "zoo";
-
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
 
     // Execute the query to set the target month
     $sql1 = "SET @target_month = '$selectedMonth';";
@@ -63,7 +52,8 @@ if (isset($_POST['generateTopDaysReport'])) {
     } else {
         echo "No results found.";
     }
-
-    $conn->close();
 }
+
+// Close the database connection
+$conn->close();
 ?>
