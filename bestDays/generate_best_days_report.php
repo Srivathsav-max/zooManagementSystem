@@ -2,30 +2,30 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateTopDaysReport"])) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateBestDaysReport"])) {
     $selectedMonth = $_POST["selectedMonth"];
 
     // Assuming tables AnimalShowTickets, ZooAdmissionTickets, and DailyConcessionRevenue
-    $query = "SELECT SaleDate, SUM(Revenue) AS TotalRevenue
+    $query = "SELECT DATE(CheckoutTime) AS SaleDate, SUM(Revenue) AS CombinedRevenue
               FROM (
-                SELECT CheckoutTime AS SaleDate, Revenue
+                SELECT CheckoutTime, Revenue
                 FROM AnimalShowTickets
-                WHERE MONTH(CheckoutTime) = ?
-                UNION
-                SELECT CheckoutTime AS SaleDate, Revenue
+                WHERE YEAR(CheckoutTime) = YEAR(?) AND MONTH(CheckoutTime) = MONTH(?)
+                UNION ALL
+                SELECT CheckoutTime, Revenue
                 FROM ZooAdmissionTickets
-                WHERE MONTH(CheckoutTime) = ?
-                UNION
+                WHERE YEAR(CheckoutTime) = YEAR(?) AND MONTH(CheckoutTime) = MONTH(?)
+                UNION ALL
                 SELECT SaleDate, Revenue
                 FROM DailyConcessionRevenue
-                WHERE MONTH(SaleDate) = ?
+                WHERE YEAR(SaleDate) = YEAR(?) AND MONTH(SaleDate) = MONTH(?)
               ) AS CombinedSales
               GROUP BY SaleDate
-              ORDER BY TotalRevenue DESC
+              ORDER BY CombinedRevenue DESC
               LIMIT 5";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("sss", $selectedMonth, $selectedMonth, $selectedMonth);
+    $stmt->bind_param("ssssss", $selectedMonth, $selectedMonth, $selectedMonth, $selectedMonth, $selectedMonth, $selectedMonth);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateTopDaysReport"
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>{$row['SaleDate']}</td>";
-            echo "<td>{$row['TotalRevenue']}</td>";
+            echo "<td>{$row['CombinedRevenue']}</td>";
             echo "</tr>";
         }
 

@@ -9,10 +9,10 @@
     <h2>Select Month for Top Days Revenue Report</h2>
 
     <!-- Form to select the month -->
-    <form method="post" action="generate_top_days_report.php">
+    <form method="post" action="generate_best_days_report.php">
         <label for="selectedMonth">Select Month:</label>
         <input type="month" name="selectedMonth" required>
-        <button type="submit" name="generateTopDaysReport">Generate Report</button>
+        <button type="submit" name="generateBestDaysReport">Generate Report</button>
     </form>
 
     <p><a href="index.php">Back to Home</a></p>

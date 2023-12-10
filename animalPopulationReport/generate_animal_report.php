@@ -18,15 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateAnimalReport"]
               LEFT JOIN CaresFor ON Animal.SpeciesID = CaresFor.SpeciesID
               LEFT JOIN Employee ON CaresFor.EmployeeID = Employee.EmployeeID
               LEFT JOIN HourlyRate ON Employee.HourlyRateID = HourlyRate.ID
-              WHERE MONTH(Animal.BirthYear) = ?
               GROUP BY Animal.SpeciesID, Animal.Status";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $selectedMonth);
     $stmt->execute();
     $result = $stmt->get_result();
 
     // Display the report
-    echo "<h2>Animal Population Report for $selectedMonth</h2>";
+    echo "<h2>Animal Population Report</h2>";
     echo "<table border='1'>";
     echo "<tr><th>Species</th><th>Status</th><th>Total Food Cost</th><th>Total Labor Cost</th></tr>";
 

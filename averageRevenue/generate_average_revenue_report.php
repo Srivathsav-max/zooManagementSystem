@@ -6,28 +6,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateAverageRevenue
     $startDate = $_POST["startDate"];
     $endDate = $_POST["endDate"];
 
+    // Validate that startDate is before or equal to endDate
+    if ($startDate > $endDate) {
+        echo "<p>Error: Start Date should be before or equal to End Date.</p>";
+        echo "<a href='average_revenue_report_form.php'>Back to Report Form</a>";
+        exit();
+    }
+
     // Assuming tables AnimalShowTickets, ZooAdmissionTickets, and DailyConcessionRevenue
     $query = "SELECT
                 'Animal Show' AS Category,
-                AVG(Revenue) AS AverageRevenue
+                FORMAT(AVG(Revenue), 2) AS AverageRevenue
               FROM AnimalShowTickets
               WHERE CheckoutTime BETWEEN ? AND ?
               UNION
               SELECT
                 'Zoo Admission' AS Category,
-                AVG(Revenue) AS AverageRevenue
+                FORMAT(AVG(Revenue), 2) AS AverageRevenue
               FROM ZooAdmissionTickets
               WHERE CheckoutTime BETWEEN ? AND ?
               UNION
               SELECT
                 'Concession' AS Category,
-                AVG(Revenue) AS AverageRevenue
+                FORMAT(AVG(Revenue), 2) AS AverageRevenue
               FROM DailyConcessionRevenue
               WHERE SaleDate BETWEEN ? AND ?
               UNION
               SELECT
                 'Total Attendance' AS Category,
-                AVG(Attendance) AS AverageRevenue
+                FORMAT(AVG(Attendance), 2) AS AverageRevenue
               FROM (
                 SELECT Attendance
                 FROM AnimalShowTickets
@@ -39,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateAverageRevenue
               ) AS CombinedAttendance";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssssss", $startDate, $endDate, $startDate, $endDate, $startDate, $endDate, $startDate, $endDate, $startDate, $endDate);
+    $stmt->bind_param("ssssssssss", $startDate, $endDate, $startDate, $endDate, $startDate, $endDate, $startDate, $endDate, $startDate, $endDate);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -49,7 +56,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateAverageRevenue
     // Check if there are rows in the result set
     if ($result->num_rows > 0) {
         echo "<table border='1'>";
-        echo "<tr><th>Category</th><th>Average Revenue</th></tr>";
+        echo "<tr style='background-color: #f2f2f2;'><th>Category</th><th>Average Revenue</th></tr>";
 
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
