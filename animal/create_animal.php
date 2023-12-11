@@ -109,12 +109,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
     <h2>Create Animal</h2>
 
     <!-- Animal creation form -->
+    <!-- Animal creation form -->
     <form method="post" action="">
         <label for="status">Status:</label>
         <input type="text" name="status" required><br>
 
         <label for="birthYear">Birth Year:</label>
-        <input type="text" name="birthYear" required><br>
+        <select name="birthYear" required>
+            <?php
+            // Generate options for birth year dropdown
+            $currentYear = date("Y");
+            for ($year = $currentYear; $year >= $currentYear - 30; $year--) {
+                echo "<option value=\"$year\">$year</option>";
+            }
+            ?>
+        </select><br>
 
         <label for="species">Species:</label>
         <select name="species" required>

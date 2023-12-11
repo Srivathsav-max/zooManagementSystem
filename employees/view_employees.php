@@ -72,10 +72,15 @@ $result = $conn->query($sql);
         td a {
             color: #4caf50;
             text-decoration: none;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            background-color: #fff;
         }
 
         td a:hover {
-            text-decoration: underline;
+            background-color: #4caf50;
+            color: #fff;
         }
     </style>
 </head>
@@ -87,6 +92,7 @@ $result = $conn->query($sql);
     <!-- Display a paginated list of employees with links to view, update, and delete -->
     <table>
         <tr>
+            <!-- Add more columns as needed -->
             <th>Employee ID</th>
             <th>Start Date</th>
             <th>Job Type</th>
@@ -101,7 +107,6 @@ $result = $conn->query($sql);
             <th>Hourly Rate ID</th>
             <th>Concession ID</th>
             <th>Zoo Admission ID</th>
-            <!-- Add more columns as needed -->
             <th>Actions</th>
         </tr>
 
@@ -132,4 +137,5 @@ $result = $conn->query($sql);
     </table>
 </body>
 </html>
+
 

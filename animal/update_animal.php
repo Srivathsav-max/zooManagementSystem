@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
         <input type="text" name="status" value="<?php echo $animal['Status']; ?>" required><br>
 
         <label for="birthYear">Birth Year:</label>
-        <input type="text" name="birthYear" value="<?php echo $animal['BirthYear']; ?>" required><br>
+        <input type="number" name="birthYear" value="<?php echo $animal['BirthYear']; ?>" required><br>
 
         <label for="species">Species:</label>
         <select name="species" required>
