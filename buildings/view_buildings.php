@@ -16,6 +16,54 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Building Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(144, 238, 144, 0.3); /* Light green with reduced opacity */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 80%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+    </style>
 </head>
 <body>
     <h2>Building Management</h2>
@@ -39,10 +87,10 @@ $result = $conn->query($sql);
                 <td>
                     <a href="view_building.php?id=<?php echo $row[
                         'ID'
-                    ]; ?>">View</a> |
+                    ]; ?>">View</a> 
                     <a href="update_building.php?id=<?php echo $row[
                         'ID'
-                    ]; ?>">Update</a> |
+                    ]; ?>">Update</a> 
                     <?php if ($_SESSION['role'] === 'Admin'): ?>
                         <a href="delete_building.php?id=<?php echo $row[
                             'ID'

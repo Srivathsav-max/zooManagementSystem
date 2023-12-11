@@ -57,18 +57,73 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
 }
 ?>
-<!-- Rest of your HTML content -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            background-image: url('background.jpg'); /* Set your background image */
+            background-size: cover;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
 
-<!-- Login form -->
-<form action="login.php" method="post">
-    <label for="username">Username:</label>
-    <input type="text" name="username" required><br>
+        form {
+            background-color: rgba(255, 255, 255, 0.7); /* Adjust the alpha value for transparency */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Optional: Add a box shadow */
+        }
 
-    <label for="password">Password:</label>
-    <input type="password" name="password" required><br>
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
 
-    <button type="submit">Login</button>
-</form>
-<p>Don't have an account? <a href="register.php">Sign Up in here</a>.</p>
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login form -->
+    <form action="login.php" method="post">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br>
+
+        <button type="submit">Login</button>
+        <p>Don't have an account? <a href="register.php">Sign Up here</a>.</p>
+    </form>
+    
 </body>
 </html>

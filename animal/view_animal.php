@@ -2,36 +2,10 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
-// Fetch species for dropdown
-$speciesSql = "SELECT * FROM Species";
-$speciesResult = $conn->query($speciesSql);
+// Fetch animals data
+$animalsSql = "SELECT * FROM Animal";
+$animalsResult = $conn->query($animalsSql);
 
-// Fetch buildings for dropdown
-$buildingSql = "SELECT * FROM Building";
-$buildingResult = $conn->query($buildingSql);
-
-// Fetch enclosures for dropdown
-$enclosureSql = "SELECT * FROM Enclosure";
-$enclosureResult = $conn->query($enclosureSql);
-
-// Handle animal creation form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
-    $status = $_POST["status"];
-    $birthYear = $_POST["birthYear"];
-    $speciesId = $_POST["species"];
-    $buildingId = $_POST["building"];
-    $enclosureId = $_POST["enclosure"];
-
-    // Perform the necessary database operations to create a new animal
-    $createSql = "INSERT INTO Animal (Status, BirthYear, SpeciesID, BuildingID, EnclosureID)
-                  VALUES (?, ?, ?, ?, ?)";
-    $createStmt = $conn->prepare($createSql);
-    $createStmt->bind_param("ssiii", $status, $birthYear, $speciesId, $buildingId, $enclosureId);
-    $createStmt->execute();
-    $createStmt->close();
-
-    echo "Animal created successfully.";
-}
 ?>
 
 <!DOCTYPE html>
@@ -39,55 +13,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Animal</title>
+    <title>View Animals</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(144, 238, 144, 0.3); /* Light green with reduced opacity */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+    </style>
 </head>
 <body>
-    <h2>Create Animal</h2>
+    <h2>View Animals</h2>
 
-    <!-- Animal creation form -->
-    <form method="post" action="">
-        <label for="status">Status:</label>
-        <input type="text" name="status" required><br>
-
-        <label for="birthYear">Birth Year:</label>
-        <input type="text" name="birthYear" required><br>
-
-        <label for="species">Species:</label>
-        <select name="species" required>
-            <?php
-            // Reset the pointer to the beginning of the species result set
-            $speciesResult->data_seek(0);
-            while ($species = $speciesResult->fetch_assoc()) :
-            ?>
-                <option value="<?php echo $species['ID']; ?>"><?php echo $species['Name']; ?></option>
+    <!-- Display animals data as a list -->
+    <?php if ($animalsResult->num_rows > 0) : ?>
+        <ul>
+            <?php while ($animal = $animalsResult->fetch_assoc()) : ?>
+                <li>ID:</strong> <?php echo $animal['ID']; ?> </li>
+                <li>Status:</strong> <?php echo $animal['Status']; ?> </li>
+                <li>Birth Year:</strong> <?php echo $animal['BirthYear']; ?> </li>
+                <li>Species ID:</strong> <?php echo $animal['SpeciesID']; ?> </li>
+                <li>Building ID:</strong> <?php echo $animal['BuildingID']; ?> </li>
+                <li>Enclosure ID:</strong> <?php echo $animal['EnclosureID']; ?></li>
             <?php endwhile; ?>
-        </select><br>
+        </ul>
+    <?php else : ?>
+        <p>No animals found.</p>
+    <?php endif; ?>
 
-        <label for="building">Building:</label>
-        <select name="building" required>
-            <?php
-            // Reset the pointer to the beginning of the building result set
-            $buildingResult->data_seek(0);
-            while ($building = $buildingResult->fetch_assoc()) :
-            ?>
-                <option value="<?php echo $building['ID']; ?>"><?php echo $building['Name']; ?></option>
-            <?php endwhile; ?>
-        </select><br>
+    <br>
 
-        <label for="enclosure">Enclosure:</label>
-        <select name="enclosure" required>
-            <?php
-            // Reset the pointer to the beginning of the enclosure result set
-            $enclosureResult->data_seek(0);
-            while ($enclosure = $enclosureResult->fetch_assoc()) :
-            ?>
-                <option value="<?php echo $enclosure['ID']; ?>"><?php echo $enclosure['SqFt']; ?> SqFt</option>
-            <?php endwhile; ?>
-        </select><br>
-
-        <button type="submit" name="createAnimal">Create Animal</button>
-    </form>
-
-    <a href="view_animals.php">Back to Animals</a>
+    <a href="../dashboard.php">Go to Dashboard</a>
 </body>
 </html>

@@ -120,8 +120,8 @@ if (isset($_POST['logout'])) {
     <!-- Assets Management -->
     <div class="section-title">Assets Management</div>
     <ul>
-    <li><a href="animal/animal.php">Animal Management</a></li>
-        <li><a href="buildings/building.php">Building Management</a></li>
+    <li><a href="animal/view_animals.php">Animal Management</a></li>
+        <li><a href="buildings/view_buildings.php">Building Management</a></li>
         <li><a href="enclosures/enclosure.php">Enclosure</a></li>
         <li><a href="species/species.php">Species</a></li>
         <li><a href="revenuesTypes/revenue_types.php">RevenueTypes</a></li>

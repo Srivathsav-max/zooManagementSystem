@@ -42,14 +42,80 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registerUser"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
     <style>
-        /* Add your styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        p {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
     </style>
 </head>
 <body>
-    <h2>User Registration</h2>
+    
 
     <!-- User Registration form -->
     <form method="post" action="">
+    <h2>User Registration</h2>
         <label for="username">Username:</label>
         <input type="text" name="username" required><br>
 
@@ -60,9 +126,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registerUser"])) {
         <input type="password" name="confirmPassword" required><br>
 
         <button type="submit" name="registerUser">Register</button>
+        <p>Already have an account? <a href="login.php">Log in here</a>.</p>
     </form>
 
-    <p>Already have an account? <a href="login.php">Log in here</a>.</p>
+    
 
     <ul>
         <!-- Add more navigation links if needed -->
