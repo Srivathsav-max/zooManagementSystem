@@ -122,8 +122,8 @@ if (isset($_POST['logout'])) {
     <ul>
     <li><a href="animal/view_animals.php">Animal Management</a></li>
         <li><a href="buildings/view_buildings.php">Building Management</a></li>
-        <li><a href="enclosures/enclosure.php">Enclosure</a></li>
-        <li><a href="species/species.php">Species</a></li>
+        <li><a href="enclosures/view_enclosures.php">Enclosure</a></li>
+        <li><a href="species/view_species.php">Species</a></li>
         <li><a href="revenuesTypes/revenue_types.php">RevenueTypes</a></li>
         <li><a href="revenuesEvents/view_revenue_events.php">RevenueEvents</a></li>
         <li><a href="animalShows/view_animal_shows.php">Animal Shows</a></li>
