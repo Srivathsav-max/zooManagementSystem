@@ -55,10 +55,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateEmployee"])) {
     $newCity = $_POST["newCity"];
     $newState = $_POST["newState"];
     $newZip = $_POST["newZip"];
-    $newSuperID = $_POST["newSuperID"];
-    $newHourlyRateID = $_POST["newHourlyRateID"];
-    $newConcessionID = $_POST["newConcessionID"];
-    $newZooAdmissionID = $_POST["newZooAdmissionID"];
+    $newSuperID = empty($_POST["newSuperID"]) ? null : $_POST["newSuperID"];
+    $newHourlyRateID = empty($_POST["newHourlyRateID"]) ? null : $_POST["newHourlyRateID"];
+    $newConcessionID = empty($_POST["newConcessionID"]) ? null : $_POST["newConcessionID"];
+    $newZooAdmissionID = empty($_POST["newZooAdmissionID"]) ? null : $_POST["newZooAdmissionID"];
 
     // Perform the necessary database operations to update the employee
     $updateSql = "UPDATE Employee SET JobType = ?, FirstName = ?, MiddleName = ?, 

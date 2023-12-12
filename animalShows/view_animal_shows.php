@@ -15,6 +15,7 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Animal Shows Management</title>
+    
 </head>
 <body>
     <h2>Animal Shows Management</h2>

@@ -28,10 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
     $city = $_POST["city"];
     $state = $_POST["state"];
     $zip = $_POST["zip"];
-    $superID = $_POST["superID"];
-    $hourlyRateID = $_POST["hourlyRateID"];
-    $concessionID = $_POST["concessionID"];
-    $zooAdmissionID = $_POST["zooAdmissionID"];
+    $superID = empty($_POST["superID"]) ? null : $_POST["superID"];
+    $hourlyRateID = empty($_POST["hourlyRateID"]) ? null : $_POST["hourlyRateID"];
+    $concessionID = empty($_POST["concessionID"]) ? null : $_POST["concessionID"];
+    $zooAdmissionID = empty($_POST["zooAdmissionID"]) ? null : $_POST["zooAdmissionID"];
 
     // Generate username and password based on first name and last name
     $username = strtolower($firstName . $lastName);
@@ -91,7 +91,68 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Employee</title>
     <style>
-        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(144, 238, 144, 0.3); /* Light green with reduced opacity */
+            margin: 0;
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            background-color: #2980b9;
+        }
+
     </style>
 </head>
 <body>
@@ -133,36 +194,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
         <label for="superID">Supervisor:</label>
         <select name="superID">
             <option value="">None</option>
-            <?php while ($employee = $employeesResult->fetch_assoc()) : ?>
-                <option value="<?php echo $employee['EmployeeID']; ?>"><?php echo $employee['FullName']; ?></option>
+            <?php
+            while ($employee = $employeesResult->fetch_assoc()) :
+                $employeeID = $employee['EmployeeID'];
+                $fullName = $employee['FullName'];
+            ?>
+                <option value="<?php echo $employeeID; ?>"><?php echo $fullName; ?></option>
             <?php endwhile; ?>
         </select><br>
 
         <label for="hourlyRateID">Hourly Rate:</label>
         <select name="hourlyRateID" required>
-            <?php while ($hourlyRate = $hourlyRatesResult->fetch_assoc()) : ?>
-                <option value="<?php echo $hourlyRate['ID']; ?>"><?php echo $hourlyRate['HourlyRate']; ?></option>
+            <option value="">None</option>
+            <?php
+            while ($hourlyRate = $hourlyRatesResult->fetch_assoc()) :
+                $rateID = $hourlyRate['ID'];
+                $hourlyRateValue = $hourlyRate['HourlyRate'];
+            ?>
+                <option value="<?php echo $rateID; ?>"><?php echo $hourlyRateValue; ?></option>
             <?php endwhile; ?>
         </select><br>
 
         <label for="concessionID">Concession:</label>
         <select name="concessionID">
             <option value="">None</option>
-            <?php while ($concession = $concessionsResult->fetch_assoc()) : ?>
-                <option value="<?php echo $concession['ID']; ?>"><?php echo $concession['Product']; ?></option>
+            <?php
+            while ($concession = $concessionsResult->fetch_assoc()) :
+                $concessionID = $concession['ID'];
+                $product = $concession['Product'];
+            ?>
+                <option value="<?php echo $concessionID; ?>"><?php echo $product; ?></option>
             <?php endwhile; ?>
         </select><br>
 
         <label for="zooAdmissionID">Zoo Admission:</label>
-    <select name="zooAdmissionID">
-        <option value="">None</option>
-        <?php
-        // Reset the pointer of the result set to the beginning
-        $zooAdmissionsResult->data_seek(0);
-        while ($zooAdmission = $zooAdmissionsResult->fetch_assoc()) : ?>
-            <option value="<?php echo $zooAdmission['ID']; ?>"><?php echo $zooAdmission['ID']; ?></option>
-        <?php endwhile; ?>
-    </select><br>
+        <select name="zooAdmissionID">
+            <option value="">None</option>
+            <?php
+            // Reset the pointer of the result set to the beginning
+            $zooAdmissionsResult->data_seek(0);
+            while ($zooAdmission = $zooAdmissionsResult->fetch_assoc()) :
+                $zooAdmissionID = $zooAdmission['ID'];
+            ?>
+                <option value="<?php echo $zooAdmissionID; ?>"><?php echo $zooAdmissionID; ?></option>
+            <?php endwhile; ?>
+        </select><br>
+
 
         <button type="submit" name="createEmployee">Create Employee</button>
     </form>
