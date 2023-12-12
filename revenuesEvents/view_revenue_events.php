@@ -37,14 +37,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateRevenueEvents"])
         // Update existing entry for the current date
         $updateSql = "UPDATE RevenueEvents SET Revenue = ?, TicketsSold = ? WHERE DateTime = ?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("ids", $totalCombinedRevenue, $totalCombinedAttendance, date('Y-m-d'));
+        $updateStmt->bind_param("diss", $totalCombinedRevenue, $totalCombinedAttendance, date('Y-m-d'));
         $updateStmt->execute();
         $updateStmt->close();
     } else {
         // Insert a new entry for the current date
-        $insertSql = "INSERT INTO RevenueEvents (ID, DateTime, Revenue, TicketsSold) VALUES (?, CURRENT_TIMESTAMP, ?, ?)";
+        $insertSql = "INSERT INTO RevenueEvents (DateTime, Revenue, TicketsSold) VALUES (CURRENT_TIMESTAMP, ?, ?)";
         $insertStmt = $conn->prepare($insertSql);
-        $insertStmt->bind_param("ids", $totalCombinedAttendance, $totalCombinedRevenue, $totalCombinedAttendance);
+        $insertStmt->bind_param("ds", $totalCombinedRevenue, $totalCombinedAttendance);
         $insertStmt->execute();
         $insertStmt->close();
     }

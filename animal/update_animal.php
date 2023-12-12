@@ -20,9 +20,9 @@ if (isset($_GET['id'])) {
     $sql = "SELECT a.ID, a.Status, a.BirthYear, a.SpeciesID, a.BuildingID, a.EnclosureID,
             s.Name AS SpeciesName, b.Name AS BuildingName, e.SqFt
             FROM Animal a
-            JOIN Species s ON a.SpeciesID = s.ID
-            JOIN Building b ON a.BuildingID = b.ID
-            JOIN Enclosure e ON a.EnclosureID = e.ID
+            LEFT JOIN Species s ON a.SpeciesID = s.ID
+            LEFT JOIN Building b ON a.BuildingID = b.ID
+            LEFT JOIN Enclosure e ON a.EnclosureID = e.ID
             WHERE a.ID = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $animalId);
@@ -31,8 +31,36 @@ if (isset($_GET['id'])) {
 
     if ($result->num_rows == 1) {
         $animal = $result->fetch_assoc();
+
+        // Display the current animal details (for debugging)
+        // print_r($animal);
+
+        // Handle animal update form submission
+        if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
+            $newStatus = $_POST["status"];
+            $newBirthYear = $_POST["birthYear"];
+            $newSpeciesId = ($_POST["species"] !== "") ? $_POST["species"] : null;
+            $newBuildingId = ($_POST["building"] !== "") ? $_POST["building"] : null;
+            $newEnclosureId = ($_POST["enclosure"] !== "") ? $_POST["enclosure"] : null;
+
+            // Perform the necessary database operations to update the animal
+            $updateSql = "UPDATE Animal
+                          SET Status = ?, BirthYear = ?, SpeciesID = NULLIF(?, ''),
+                          BuildingID = NULLIF(?, ''), EnclosureID = NULLIF(?, '')
+                          WHERE ID = ?";
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bind_param("ssiiii", $newStatus, $newBirthYear, $newSpeciesId, $newBuildingId, $newEnclosureId, $animalId);
+            $updateStmt->execute();
+            $updateStmt->close();
+
+            // For debugging, add the following line to display the posted data
+            // print_r($_POST);
+
+            echo "Animal updated successfully.";
+        }
     } else {
         echo "Animal not found.";
+        echo "Error: " . $conn->error;  // Add this line for additional error information
         exit();
     }
 
@@ -40,26 +68,6 @@ if (isset($_GET['id'])) {
 } else {
     echo "Invalid request.";
     exit();
-}
-
-// Handle animal update form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
-    $newStatus = $_POST["status"];
-    $newBirthYear = $_POST["birthYear"];
-    $newSpeciesId = $_POST["species"];
-    $newBuildingId = $_POST["building"];
-    $newEnclosureId = $_POST["enclosure"];
-
-    // Perform the necessary database operations to update the animal
-    $updateSql = "UPDATE Animal
-                  SET Status = ?, BirthYear = ?, SpeciesID = ?, BuildingID = ?, EnclosureID = ?
-                  WHERE ID = ?";
-    $updateStmt = $conn->prepare($updateSql);
-    $updateStmt->bind_param("ssiiii", $newStatus, $newBirthYear, $newSpeciesId, $newBuildingId, $newEnclosureId, $animalId);
-    $updateStmt->execute();
-    $updateStmt->close();
-
-    echo "Animal updated successfully.";
 }
 ?>
 
@@ -119,7 +127,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
             text-decoration: none;
             color: #333;
         }
-
     </style>
 </head>
 <body>
@@ -134,7 +141,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
         <input type="number" name="birthYear" value="<?php echo $animal['BirthYear']; ?>" required><br>
 
         <label for="species">Species:</label>
-        <select name="species" required>
+        <select name="species">
+            <option value="" <?php echo ($animal['SpeciesID'] === null) ? 'selected' : ''; ?>>None</option>
             <?php
             // Reset the pointer to the beginning of the species result set
             $speciesResult->data_seek(0);
@@ -146,7 +154,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
         </select><br>
 
         <label for="building">Building:</label>
-        <select name="building" required>
+        <select name="building">
+            <option value="" <?php echo ($animal['BuildingID'] === null) ? 'selected' : ''; ?>>None</option>
             <?php
             // Reset the pointer to the beginning of the building result set
             $buildingResult->data_seek(0);
@@ -158,7 +167,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
         </select><br>
 
         <label for="enclosure">Enclosure:</label>
-        <select name="enclosure" required>
+        <select name="enclosure">
+            <option value="" <?php echo ($animal['EnclosureID'] === null) ? 'selected' : ''; ?>>None</option>
             <?php
             // Reset the pointer to the beginning of the enclosure result set
             $enclosureResult->data_seek(0);
@@ -166,7 +176,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
                 $selected = ($enclosure['ID'] == $animal['EnclosureID']) ? 'selected' : '';
             ?>
                 <option value="<?php echo $enclosure['ID']; ?>" <?php echo $selected; ?>><?php echo $enclosure['SqFt']; ?> SqFt</option>
-                <?php endwhile; ?>
+            <?php endwhile; ?>
         </select><br>
 
         <button type="submit" name="updateAnimal">Update Animal</button>
@@ -175,4 +185,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimal"])) {
     <a href="view_animals.php">Back to Animals</a>
 </body>
 </html>
-

@@ -18,9 +18,9 @@ $enclosureResult = $conn->query($enclosureSql);
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
     $status = $_POST["status"];
     $birthYear = $_POST["birthYear"];
-    $speciesId = $_POST["species"];
-    $buildingId = $_POST["building"];
-    $enclosureId = $_POST["enclosure"];
+    $speciesId = ($_POST["species"] !== "") ? $_POST["species"] : null;
+    $buildingId = ($_POST["building"] !== "") ? $_POST["building"] : null;
+    $enclosureId = ($_POST["enclosure"] !== "") ? $_POST["enclosure"] : null;
 
     // Perform the necessary database operations to create a new animal
     $createSql = "INSERT INTO Animal (Status, BirthYear, SpeciesID, BuildingID, EnclosureID)
@@ -32,7 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
 
     echo "Animal created successfully.";
 }
+
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +111,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
     <h2>Create Animal</h2>
 
     <!-- Animal creation form -->
-    <!-- Animal creation form -->
     <form method="post" action="">
         <label for="status">Status:</label>
         <input type="text" name="status" required><br>
@@ -126,7 +127,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
         </select><br>
 
         <label for="species">Species:</label>
-        <select name="species" required>
+        <select name="species" >
+            <option value="">None</option>
             <?php
             // Reset the pointer to the beginning of the species result set
             $speciesResult->data_seek(0);
@@ -137,7 +139,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
         </select><br>
 
         <label for="building">Building:</label>
-        <select name="building" required>
+        <select name="building" >
+            <option value="">None</option>
             <?php
             // Reset the pointer to the beginning of the building result set
             $buildingResult->data_seek(0);
@@ -148,7 +151,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
         </select><br>
 
         <label for="enclosure">Enclosure:</label>
-        <select name="enclosure" required>
+        <select name="enclosure" >
+            <option value="">None</option>
             <?php
             // Reset the pointer to the beginning of the enclosure result set
             $enclosureResult->data_seek(0);
@@ -164,3 +168,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimal"])) {
     <a href="view_animals.php">Back to Animals</a>
 </body>
 </html>
+

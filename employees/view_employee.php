@@ -67,6 +67,7 @@ $fetchStmt->close();
         }
 
     </style>
+    
     <!-- Add your styles if needed -->
 </head>
 <body>
@@ -87,5 +88,6 @@ $fetchStmt->close();
     <p><strong>Concession ID:</strong> <?php echo $employee['ConcessionID']; ?></p>
     <p><strong>Zoo Admission ID:</strong> <?php echo $employee['ZooAdmissionID']; ?></p>
     <!-- Add more details as needed -->
+    <a href="view_employees.php">Back to Employee</a>
 </body>
 </html>

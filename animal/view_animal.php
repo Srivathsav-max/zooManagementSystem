@@ -69,6 +69,6 @@ $animalsResult = $conn->query($animalsSql);
 
     <br>
 
-    <a href="../dashboard.php">Go to Dashboard</a>
+    <a href="view_animals.php">Go to Animals</a>
 </body>
 </html>

@@ -19,9 +19,9 @@ $result = $conn->query($sql);
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: rgba(144, 238, 144, 0.3); /* Light green with reduced opacity */
+            background-color: #f4f4f4;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
 
         h2 {
@@ -30,26 +30,27 @@ $result = $conn->query($sql);
         }
 
         a {
-            display: inline-block;
+            display: block;
+            width: 200px;
+            margin: 10px auto; /* Reduced margin */
             padding: 10px 20px;
-            background-color: #3498db;
-            color: #fff;
+            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
+            color: #333;
             text-decoration: none;
             border-radius: 5px;
-            margin-bottom: 20px;
+            text-align: center;
         }
 
         table {
             width: 80%;
-            margin: 0 auto;
+            margin: 20px auto;
             border-collapse: collapse;
             margin-bottom: 30px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
         }
 
         th, td {
-            padding: 12px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }

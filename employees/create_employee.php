@@ -78,12 +78,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createEmployee"])) {
 }
 ?>
 
-<!-- ... (rest of the HTML code) ... -->
-
-
-<!-- ... (rest of the HTML code) ... -->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
