@@ -1,4 +1,4 @@
-You can Use This [!https://github.com/Srivathsav-max/zooManagementSystem/blob/main/dump.sql] we updated some of below queries so you can use this updated dump
+You can Use This https://github.com/Srivathsav-max/zooManagementSystem/blob/main/dump.sql we updated some of below queries so you can use this updated dump
 
 ```
 CREATE TABLE HourlyRate (
