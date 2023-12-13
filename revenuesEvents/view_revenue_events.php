@@ -161,6 +161,7 @@ $revenueEventsResult = $conn->query($revenueEventsSql);
     <?php endif; ?>
 
     <!-- Display a paginated list of revenue events with links to view, update, and delete -->
+    <a href = "test_revenue_event.php">Update Zoo Admission</a>
     <table border="1">
         <tr>
             <th>Revenue Type ID</th>
