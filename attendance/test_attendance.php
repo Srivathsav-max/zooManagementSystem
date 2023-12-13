@@ -205,6 +205,7 @@ $zooAdmissionsResult = $conn->query($zooAdmissionsSql);
                 </tr>
             <?php endwhile; ?>
         </table>
+        <a href = "../dashboard.php">Back to Dashboard</a>
     </div>
 </body>
 </html>

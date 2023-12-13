@@ -57,5 +57,6 @@
         <input type="date" name="selectedDate" required>
         <button type="submit" name="generateReport">Generate Report</button>
     </form>
+    <a href = "../dashboard.php">Back to Dashboard</a>
 </body>
 </html>

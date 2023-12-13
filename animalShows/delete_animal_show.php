@@ -3,12 +3,12 @@
 include '../includes/db_connection.php';
 
 // Fetch the ID of the animal show to be deleted
-$showId = $_GET['id'];
+$animalShowID = $_GET['id'];
 
 // Prepare and execute the SQL statement to delete the animal show
-$deleteSql = "DELETE FROM AnimalShow WHERE ID = ?";
+$deleteSql = "DELETE FROM animalshow WHERE AnimalShowID = ?";
 $deleteStmt = $conn->prepare($deleteSql);
-$deleteStmt->bind_param("i", $showId);
+$deleteStmt->bind_param("i", $animalShowID);
 $deleteStmt->execute();
 $deleteStmt->close();
 

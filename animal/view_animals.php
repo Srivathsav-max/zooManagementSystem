@@ -6,7 +6,7 @@ include '../includes/db_connection.php';
 session_start();
 
 // Fetch animals with related information from referenced tables
-$sql = "SELECT Animal.ID, Animal.Status, Animal.BirthYear, Species.Name AS SpeciesName, Enclosure.ID AS EnclosureID, Building.Name AS BuildingName
+$sql = "SELECT Animal.ID, Animal.Status, Animal.BirthYear, Species.Name AS SpeciesName, Enclosure.sqft AS EnclosureSqft, Building.Name AS BuildingName
         FROM Animal
         LEFT JOIN Species ON Animal.SpeciesID = Species.ID
         LEFT JOIN Enclosure ON Animal.EnclosureID = Enclosure.ID
@@ -69,8 +69,6 @@ $result = $conn->query($sql);
         tr:hover {
             background-color: #f5f5f5;
         }
-
-
     </style>
 </head>
 <body>
@@ -85,7 +83,7 @@ $result = $conn->query($sql);
             <th>Status</th>
             <th>Birth Year</th>
             <th>Species Name</th>
-            <th>Enclosure ID</th>
+            <th>Enclosure (.Sqft)</th>
             <th>Building Name</th>
             <th>Actions</th>
         </tr>
@@ -96,7 +94,7 @@ $result = $conn->query($sql);
                 <td><?php echo isset($row['Status']) ? $row['Status'] : 'N/A'; ?></td>
                 <td><?php echo isset($row['BirthYear']) ? $row['BirthYear'] : 'N/A'; ?></td>
                 <td><?php echo isset($row['SpeciesName']) ? $row['SpeciesName'] : 'N/A'; ?></td>
-                <td><?php echo isset($row['EnclosureID']) ? $row['EnclosureID'] : 'N/A'; ?></td>
+                <td><?php echo isset($row['EnclosureSqft']) ? $row['EnclosureSqft'] : 'N/A'; ?></td>
                 <td><?php echo isset($row['BuildingName']) ? $row['BuildingName'] : 'N/A'; ?></td>
                 <td>
                     <a href="view_animal.php?id=<?php echo $row['ID']; ?>">View</a> 

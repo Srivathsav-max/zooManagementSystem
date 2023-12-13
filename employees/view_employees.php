@@ -17,71 +17,53 @@ $result = $conn->query($sql);
     <title>Employee Management</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
         }
 
         h2 {
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 15px;
-            margin: 0;
             text-align: center;
+            color: #333;
         }
 
         a {
-            display: inline-block;
-            background-color: #4caf50;
-            color: #fff;
-            padding: 10px;
-            margin: 15px;
-            text-align: center;
+            display: block;
+            width: 200px;
+            margin: 10px auto; /* Reduced margin */
+            padding: 10px 20px;
+            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
+            color: #333;
             text-decoration: none;
             border-radius: 5px;
-            width: 150px;
+            text-align: center;
         }
 
         table {
-            width: 100%;
+            width: 80%;
+            margin: 20px auto;
             border-collapse: collapse;
-            margin-top: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 30px;
+            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
         }
 
         th, td {
-            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
         }
 
         th {
-            background-color: #4caf50;
-            color: #fff;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #3498db;
+            color: white;
         }
 
         tr:hover {
-            background-color: #ddd;
+            background-color: #f5f5f5;
         }
 
-        td a {
-            color: #4caf50;
-            text-decoration: none;
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 3px;
-            background-color: #fff;
-        }
 
-        td a:hover {
-            background-color: #4caf50;
-            color: #fff;
-        }
     </style>
 </head>
 <body>

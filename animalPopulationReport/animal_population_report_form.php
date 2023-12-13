@@ -57,5 +57,6 @@
         <input type="month" name="selectedMonth" required>
         <button type="submit" name="generateAnimalReport">Generate Report</button>
     </form>
+    <a href = "../dashboard.php">Back to Dashboard</a>
 </body>
 </html>

@@ -12,13 +12,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateAnimalReport"]
                 Species.Name AS SpeciesName, 
                 Animal.Status,
                 SUM(Species.FoodCost) AS TotalFoodCost,
-                SUM(HourlyRate.HourlyRate * 40) AS TotalLaborCost
+                SUM(COALESCE(HourlyRate.HourlyRate * 40, 0)) AS TotalLaborCost
                 FROM Animal
                 INNER JOIN Species ON Animal.SpeciesID = Species.ID
                 LEFT JOIN CaresFor ON Animal.SpeciesID = CaresFor.SpeciesID
                 LEFT JOIN Employee ON CaresFor.EmployeeID = Employee.EmployeeID
                 LEFT JOIN HourlyRate ON Employee.HourlyRateID = HourlyRate.ID
-                WHERE DATE_FORMAT(Species.updated_date, '%Y-%m') = ?
+                WHERE DATE_FORMAT(Species.updated_date, '%Y-%m') = ? AND Employee.EmployeeID IS NOT NULL
                 GROUP BY Animal.SpeciesID, Animal.Status";
 
     $stmt = $conn->prepare($query);
@@ -82,7 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateAnimalReport"]
 
         echo "</table>";
     } else {
-        echo "<p>No data available for the selected month.</p>";
+        echo "<p>No data available for the selected month or no employee assigned.</p>";
     }
 
     echo "<a href='animal_population_report_form.php'>Back to Report Form</a>";

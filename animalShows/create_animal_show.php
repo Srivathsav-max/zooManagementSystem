@@ -90,6 +90,9 @@ $revenueTypeResult = $conn->query($revenueTypeSql);
             <?php endwhile; ?>
         </select><br>
 
+        <label for="name">Name:</label>
+        <input type="text" name="name" required><br>
+
         <label for="showsPerDay">Shows Per Day:</label>
         <input type="number" name="showsPerDay" required><br>
 
@@ -113,15 +116,16 @@ $revenueTypeResult = $conn->query($revenueTypeSql);
 // Handle animal show creation form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["createAnimalShow"])) {
     $revenueTypeId = $_POST["revenueTypeId"];
+    $name = $_POST["name"];
     $showsPerDay = $_POST["showsPerDay"];
     $seniorPrice = $_POST["seniorPrice"];
     $adultPrice = $_POST["adultPrice"];
     $childPrice = $_POST["childPrice"];
 
     // Prepare and execute the SQL statement to create a new animal show
-    $createSql = "INSERT INTO AnimalShow (ID, ShowsPerDay, SeniorPrice, AdultPrice, ChildPrice) VALUES (?, ?, ?, ?, ?)";
+    $createSql = "INSERT INTO AnimalShow (id, Name, ShowsPerDay, SeniorPrice, AdultPrice, ChildPrice) VALUES (?, ?, ?, ?, ?, ?)";
     $createStmt = $conn->prepare($createSql);
-    $createStmt->bind_param("iiiid", $revenueTypeId, $showsPerDay, $seniorPrice, $adultPrice, $childPrice);
+    $createStmt->bind_param("issiii", $revenueTypeId, $name, $showsPerDay, $seniorPrice, $adultPrice, $childPrice);
     $createStmt->execute();
     $createStmt->close();
 

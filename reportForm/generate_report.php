@@ -11,33 +11,33 @@ include '../includes/db_connection.php';
     <title>Revenue Report</title>
     <style>
         body {
-                        background-color: rgba(0, 128, 0, 0.2); /* Transparent green background */
-                        padding: 20px;
-                    }
-                    h2 {
-                        color: #008000; /* Green text */
-                    }
-                    table {
-                        border: 1px solid #008000; /* Green border */
-                        background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
-                        width: 100%;
-                        margin-top: 20px;
-                        margin-bottom: 20px;
-                    }
-                    table th, table td {
-                        padding: 10px;
-                        text-align: left;
-                        border: 1px solid #008000; /* Green border */
-                    }
-                    p {
-                        color: #008000; /* Green text */
-                    }
-                    a {
-                        color: #008000; /* Green text */
-                        text-decoration: none;
-                        font-weight: bold;
-                        margin-right: 20px;
-                    }
+            background-color: rgba(0, 128, 0, 0.2); /* Transparent green background */
+            padding: 20px;
+        }
+        h2 {
+            color: #008000; /* Green text */
+        }
+        table {
+            border: 1px solid #008000; /* Green border */
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly transparent white background */
+            width: 100%;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        table th, table td {
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #008000; /* Green border */
+        }
+        p {
+            color: #008000; /* Green text */
+        }
+        a {
+            color: #008000; /* Green text */
+            text-decoration: none;
+            font-weight: bold;
+            margin-right: 20px;
+        }
     </style>
 </head>
 <body>
@@ -49,9 +49,10 @@ include '../includes/db_connection.php';
             // Assuming a RevenueEvents table with columns ID, DateTime, Revenue, TicketsSold
             // You may need to join with other tables to get source details
 
-            $query = "SELECT DateTime, Revenue, TicketsSold
+            $query = "SELECT DateTime, SUM(Revenue) AS TotalRevenue, SUM(TicketsSold) AS TotalTicketsSold
                       FROM RevenueEvents
-                      WHERE DateTime = ?";
+                      WHERE DateTime = ?
+                      GROUP BY DateTime";
             $stmt = $conn->prepare($query);
             $stmt->bind_param("s", $selectedDate);
             $stmt->execute();
@@ -60,13 +61,13 @@ include '../includes/db_connection.php';
             // Display the report
             echo "<h2>Revenue Report for $selectedDate</h2>";
             echo "<table>";
-            echo "<tr><th>Date</th><th>Revenue</th><th>Tickets Sold</th></tr>";
+            echo "<tr><th>Date</th><th>Total Revenue</th><th>Total Tickets Sold</th></tr>";
 
             while ($row = $result->fetch_assoc()) {
                 echo "<tr>";
                 echo "<td>{$row['DateTime']}</td>";
-                echo "<td>{$row['Revenue']}</td>";
-                echo "<td>{$row['TicketsSold']}</td>";
+                echo "<td>{$row['TotalRevenue']}</td>";
+                echo "<td>{$row['TotalTicketsSold']}</td>";
                 echo "</tr>";
             }
 
@@ -81,5 +82,6 @@ include '../includes/db_connection.php';
         $conn->close();
         ?>
     </div>
+    
 </body>
 </html>

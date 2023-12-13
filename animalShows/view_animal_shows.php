@@ -3,9 +3,9 @@
 include '../includes/db_connection.php';
 
 // Fetch animal shows from the database
-$sql = "SELECT ASH.ID, RT.Name AS RevenueType, ASH.ShowsPerDay, ASH.SeniorPrice, ASH.AdultPrice, ASH.ChildPrice
+$sql = "SELECT ASH.AnimalShowID, RT.Name AS RevenueType, ASH.Name, ASH.ShowsPerDay, ASH.SeniorPrice, ASH.AdultPrice, ASH.ChildPrice
         FROM AnimalShow AS ASH
-        JOIN RevenueType AS RT ON ASH.ID = RT.ID";
+        JOIN RevenueType AS RT ON ASH.id = RT.ID";
 $result = $conn->query($sql);
 ?>
 
@@ -62,6 +62,8 @@ $result = $conn->query($sql);
         tr:hover {
             background-color: #f5f5f5;
         }
+
+
     </style>
 </head>
 <body>
@@ -74,6 +76,7 @@ $result = $conn->query($sql);
         <tr>
             <th>Animal Show ID</th>
             <th>Revenue Type</th>
+            <th>Name</th>
             <th>Shows Per Day</th>
             <th>Senior Price</th>
             <th>Adult Price</th>
@@ -83,19 +86,20 @@ $result = $conn->query($sql);
 
         <?php while ($row = $result->fetch_assoc()) : ?>
             <tr>
-                <td><?php echo $row['ID']; ?></td>
+                <td><?php echo $row['AnimalShowID']; ?></td>
                 <td><?php echo $row['RevenueType']; ?></td>
+                <td><?php echo $row['Name']; ?></td>
                 <td><?php echo $row['ShowsPerDay']; ?></td>
                 <td><?php echo $row['SeniorPrice']; ?></td>
                 <td><?php echo $row['AdultPrice']; ?></td>
                 <td><?php echo $row['ChildPrice']; ?></td>
                 <td>
-                    <a href="update_animal_show.php?id=<?php echo $row['ID']; ?>">Update</a>
-                    <a href="delete_animal_show.php?id=<?php echo $row['ID']; ?>">Delete</a>
+                    <a href="update_animal_show.php?id=<?php echo $row['AnimalShowID']; ?>">Update</a>
+                    <a href="delete_animal_show.php?id=<?php echo $row['AnimalShowID']; ?>">Delete</a>
                 </td>
             </tr>
         <?php endwhile; ?>
     </table>
-    <a href = "../dashboard.php">Back to Dashboard</a>
+    <a href="../dashboard.php">Back to Dashboard</a>
 </body>
 </html>

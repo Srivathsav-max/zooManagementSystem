@@ -104,7 +104,7 @@
         // Close the database connection
         $conn->close();
         ?>
-        <a href='top_days_report_form.php'>Back to Report Form</a>
+        <a href='best_days_report_form.php'>Back to Report Form</a>
     </div>
 </body>
 </html>

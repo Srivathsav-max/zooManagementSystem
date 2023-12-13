@@ -36,6 +36,57 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateCaresFor"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Cares For Relationship</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            width: 50%;
+            margin: 20px auto;
+            background-color: rgba(144, 238, 144, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 12px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
     <h2>Update Cares For Relationship</h2>
@@ -44,12 +95,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateCaresFor"])) {
     <form method="post" action="">
         <label for="newEmployeeID">New Employee:</label>
         <select name="newEmployeeID" required>
-            <!-- Fetch and display available employees in dropdown -->
+            <?php
+            // Fetch and display available employees in dropdown with specific job types
+            $employeeQuery = "SELECT EmployeeID, CONCAT(FirstName, ' ', LastName) AS FullName FROM Employee 
+                              WHERE JobType = 'Veterinarian' OR JobType = 'Animal Care Specialist'";
+            $employeeResult = $conn->query($employeeQuery);
+            
+            while ($employee = $employeeResult->fetch_assoc()) {
+                echo "<option value='{$employee['EmployeeID']}'";
+                if ($employee['EmployeeID'] == $row['EmployeeID']) {
+                    echo " selected";
+                }
+                echo ">{$employee['FullName']}</option>";
+            }
+            ?>
         </select><br>
 
         <label for="newSpeciesID">New Species:</label>
         <select name="newSpeciesID" required>
-            <!-- Fetch and display available species in dropdown -->
+            <?php
+            // Fetch and display available species in dropdown
+            $speciesQuery = "SELECT ID, Name FROM Species";
+            $speciesResult = $conn->query($speciesQuery);
+
+            while ($species = $speciesResult->fetch_assoc()) {
+                echo "<option value='{$species['ID']}'";
+                if ($species['ID'] == $row['SpeciesID']) {
+                    echo " selected";
+                }
+                echo ">{$species['Name']}</option>";
+            }
+            ?>
         </select><br>
 
         <button type="submit" name="updateCaresFor">Update Relationship</button>

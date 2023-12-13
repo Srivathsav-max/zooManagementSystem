@@ -59,6 +59,6 @@
         <button type="submit" name="generateTopDaysReport">Generate Report</button>
     </form>
 
-    <p><a href="index.php">Back to Home</a></p>
+    <p><a href="../dashboard.php">Back to Dashboard</a></p>
 </body>
 </html>

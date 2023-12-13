@@ -147,6 +147,7 @@ $concessionsResult = $conn->query($concessionsSql);
                 </tr>
             <?php endwhile; ?>
         </table>
+        <a href = "../dashboard.php">Back to Dashboard</a>
     </div>
 </body>
 </html>

@@ -8,7 +8,7 @@ $revenueTypeResult = $conn->query($revenueTypeSql);
 
 // Fetch the details of the selected animal show
 $showId = $_GET['id'];
-$showSql = "SELECT * FROM AnimalShow WHERE ID = ?";
+$showSql = "SELECT * FROM AnimalShow WHERE AnimalShowID = ?";
 $showStmt = $conn->prepare($showSql);
 $showStmt->bind_param("i", $showId);
 $showStmt->execute();
@@ -83,11 +83,14 @@ $showStmt->close();
         <label for="revenueTypeId">Revenue Type:</label>
         <select name="revenueTypeId" required>
             <?php while ($revenueType = $revenueTypeResult->fetch_assoc()) : ?>
-                <option value="<?php echo $revenueType['ID']; ?>" <?php echo ($revenueType['ID'] == $show['ID']) ? 'selected' : ''; ?>>
+                <option value="<?php echo $revenueType['ID']; ?>" <?php echo ($revenueType['ID'] == $show['id']) ? 'selected' : ''; ?>>
                     <?php echo $revenueType['Name']; ?>
                 </option>
             <?php endwhile; ?>
         </select><br>
+
+        <label for="name">Name:</label>
+        <input type="text" name="name" value="<?php echo $show['Name']; ?>" required><br>
 
         <label for="showsPerDay">Shows Per Day:</label>
         <input type="number" name="showsPerDay" value="<?php echo $show['ShowsPerDay']; ?>" required><br>
@@ -112,15 +115,16 @@ $showStmt->close();
 // Handle animal show update form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["updateAnimalShow"])) {
     $revenueTypeId = $_POST["revenueTypeId"];
+    $name = $_POST["name"];
     $showsPerDay = $_POST["showsPerDay"];
     $seniorPrice = $_POST["seniorPrice"];
     $adultPrice = $_POST["adultPrice"];
     $childPrice = $_POST["childPrice"];
 
     // Prepare and execute the SQL statement to update the animal show
-    $updateSql = "UPDATE AnimalShow SET ID = ?, ShowsPerDay = ?, SeniorPrice = ?, AdultPrice = ?, ChildPrice = ? WHERE ID = ?";
+    $updateSql = "UPDATE AnimalShow SET id = ?, Name = ?, ShowsPerDay = ?, SeniorPrice = ?, AdultPrice = ?, ChildPrice = ? WHERE AnimalShowID = ?";
     $updateStmt = $conn->prepare($updateSql);
-    $updateStmt->bind_param("iiiidi", $revenueTypeId, $showsPerDay, $seniorPrice, $adultPrice, $childPrice, $showId);
+    $updateStmt->bind_param("issiiii", $revenueTypeId, $name, $showsPerDay, $seniorPrice, $adultPrice, $childPrice, $showId);
     $updateStmt->execute();
     $updateStmt->close();
 

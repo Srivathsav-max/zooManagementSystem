@@ -88,5 +88,6 @@ $result = $conn->query($sql);
             </tr>
         <?php endwhile; ?>
     </table>
+    <a href = "../dashboard.php">Back to Dashboard</a>
 </body>
 </html>

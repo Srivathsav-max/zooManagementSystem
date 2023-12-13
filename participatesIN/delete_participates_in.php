@@ -2,14 +2,13 @@
 // Include the common database connection file
 include '../includes/db_connection.php';
 
-// Retrieve the Species ID and Animal Show ID from the URL parameters
-$speciesID = $_GET['speciesId'];
-$animalShowID = $_GET['animalShowId'];
+// Retrieve the ID from the URL parameters
+$id = $_GET['id'];
 
 // Delete the Participates In relationship record from the database
-$deleteSql = "DELETE FROM ParticipatesIN WHERE SpeciesID = ? AND AnimalShowID = ?";
+$deleteSql = "DELETE FROM ParticipatesIN WHERE ID = ?";
 $stmt = $conn->prepare($deleteSql);
-$stmt->bind_param("ii", $speciesID, $animalShowID);
+$stmt->bind_param("i", $id);
 $stmt->execute();
 $stmt->close();
 

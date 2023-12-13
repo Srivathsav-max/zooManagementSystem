@@ -60,5 +60,6 @@
         <input type="date" name="endDate" required>
         <button type="submit" name="generateTopAttractionsReport">Generate Report</button>
     </form>
+    <a href = "../dashboard.php">Back to Dashboard</a>
 </body>
 </html>

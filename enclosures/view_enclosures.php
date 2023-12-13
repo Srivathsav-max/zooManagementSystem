@@ -98,10 +98,11 @@ $result = $conn->query($sql);
                        <a href="delete_enclosure.php?id=<?php echo $row[
                            'ID'
                        ]; ?>">Delete</a>
-<?php endif; ?>
+                <?php endif; ?>
                 </td>
             </tr>
         <?php endwhile; ?>
     </table>
+    <a href = "../dashboard.php">back to Dashboard</a>
 </body>
 </html>

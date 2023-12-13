@@ -38,11 +38,14 @@ while ($row = $zooAdmissionResult->fetch_assoc()) {
     ];
 }
 
+// Combine data from both sources
+$combinedData = array_merge($animalShowData, $zooAdmissionData);
+
 // Automatically update revenue events only if there are changes
 $dateTime = getCurrentDate();
 $updateRequired = false;
 
-foreach ($animalShowData as $revenueTypeId => $animalShow) {
+foreach ($combinedData as $revenueTypeId => $data) {
     // You can add your update logic here if needed
 
     // Fetch existing values for the current date and RevenueTypeID
@@ -55,7 +58,7 @@ foreach ($animalShowData as $revenueTypeId => $animalShow) {
     $fetchExistingStmt->close();
 
     // Check if the values are different from the existing ones
-    if ($animalShow['TotalRevenue'] != $existingRevenue || $animalShow['TotalAttendance'] != $existingTicketsSold) {
+    if ($data['TotalRevenue'] != $existingRevenue || $data['TotalAttendance'] != $existingTicketsSold) {
         $updateRequired = true;
         break;
     }
@@ -63,19 +66,43 @@ foreach ($animalShowData as $revenueTypeId => $animalShow) {
 
 // Update revenue events only if changes are detected
 if ($updateRequired) {
-    foreach ($animalShowData as $revenueTypeId => $animalShow) {
+    foreach ($combinedData as $revenueTypeId => $data) {
         // Add your update logic here if needed
 
-        // Update existing entry for the current date and RevenueTypeID
-        $updateSql = "INSERT INTO RevenueEvents (DateTime, Revenue, TicketsSold, ID)
-                      VALUES (?, ?, ?, ?)
-                      ON DUPLICATE KEY UPDATE Revenue = VALUES(Revenue),
-                                              TicketsSold = VALUES(TicketsSold)";
+        // Check if the referenced data exists for AnimalShowTickets
+        $checkAnimalShowDataSql = "SELECT COUNT(*) FROM AnimalShowTickets WHERE AnimalShowID = ?";
+        $checkAnimalShowDataStmt = $conn->prepare($checkAnimalShowDataSql);
+        $checkAnimalShowDataStmt->bind_param("i", $revenueTypeId);
+        $checkAnimalShowDataStmt->execute();
+        $checkAnimalShowDataStmt->bind_result($rowCountAnimalShow);
+        $checkAnimalShowDataStmt->fetch();
+        $checkAnimalShowDataStmt->close();
 
-        $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->bind_param("sdii", $dateTime, $animalShow['TotalRevenue'], $animalShow['TotalAttendance'], $revenueTypeId);
-        $updateStmt->execute();
-        $updateStmt->close();
+        // Check if the referenced data exists for ZooAdmissionTickets
+        $checkZooAdmissionDataSql = "SELECT COUNT(*) FROM ZooAdmissionTickets WHERE ZooAdmissionID = ?";
+        $checkZooAdmissionDataStmt = $conn->prepare($checkZooAdmissionDataSql);
+        $checkZooAdmissionDataStmt->bind_param("i", $revenueTypeId);
+        $checkZooAdmissionDataStmt->execute();
+        $checkZooAdmissionDataStmt->bind_result($rowCountZooAdmission);
+        $checkZooAdmissionDataStmt->fetch();
+        $checkZooAdmissionDataStmt->close();
+
+        // Check if referenced data exists in either table
+        if ($rowCountAnimalShow > 0 || $rowCountZooAdmission > 0) {
+            // Update existing entry for the current date and RevenueTypeID
+            $updateSql = "INSERT INTO RevenueEvents (DateTime, Revenue, TicketsSold, ID)
+                          VALUES (?, ?, ?, ?)
+                          ON DUPLICATE KEY UPDATE Revenue = VALUES(Revenue),
+                                                  TicketsSold = VALUES(TicketsSold)";
+
+            $updateStmt = $conn->prepare($updateSql);
+            $updateStmt->bind_param("sdii", $dateTime, $data['TotalRevenue'], $data['TotalAttendance'], $revenueTypeId);
+            $updateStmt->execute();
+            $updateStmt->close();
+        } else {
+            // Log an error or handle the case where referenced data doesn't exist
+            echo "Referenced data not found for RevenueTypeID: " . $revenueTypeId;
+        }
     }
 }
 
@@ -93,65 +120,15 @@ $revenueEventsResult = $conn->query($revenueEventsSql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Total Attendance and Revenue</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-        }
-
-        a {
-            display: block;
-            width: 200px;
-            margin: 10px auto; /* Reduced margin */
-            padding: 10px 20px;
-            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
-            color: #333;
-            text-decoration: none;
-            border-radius: 5px;
-            text-align: center;
-        }
-
-        table {
-            width: 80%;
-            margin: 20px auto;
-            border-collapse: collapse;
-            margin-bottom: 30px;
-            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
-        }
-
-        th, td {
-            padding: 8px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: #3498db;
-            color: white;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-
-
-    </style>
 </head>
 
 <body>
     <h2>Total Attendance and Revenue</h2>
 
-    <?php foreach ($animalShowData as $revenueTypeId => $animalShow) : ?>
+    <?php foreach ($combinedData as $revenueTypeId => $data) : ?>
         <h3>Revenue Type ID: <?php echo $revenueTypeId; ?></h3>
-        <p>Animal Shows - Total Attendance: <?php echo $animalShow['TotalAttendance']; ?></p>
-        <p>Animal Shows - Total Revenue: <?php echo $animalShow['TotalRevenue']; ?></p>
+        <p>Total Attendance: <?php echo $data['TotalAttendance']; ?></p>
+        <p>Total Revenue: <?php echo $data['TotalRevenue']; ?></p>
     <?php endforeach; ?>
 
     <?php if ($updateRequired) : ?>
@@ -181,14 +158,14 @@ $revenueEventsResult = $conn->query($revenueEventsSql);
                 <td><?php echo isset($row['TicketsSold']) ? $row['TicketsSold'] : ''; ?></td>
                 <!-- Display more columns as needed -->
                 <td>
-                    <!-- <a href="view_revenue_event.php?id=<?php echo isset($row['ID']) ? $row['ID'] : ''; ?>">View</a>  -->
-                    <a href="update_revenue_event.php?id=<?php echo isset($row['ID']) ? $row['ID'] : ''; ?>">Update</a> 
+                    <a href="view_revenue_event.php?id=<?php echo isset($row['ID']) ? $row['ID'] : ''; ?>">View</a> |
+                    <a href="update_revenue_event.php?id=<?php echo isset($row['ID']) ? $row['ID'] : ''; ?>">Update</a> |
                     <a href="delete_revenue_event.php?id=<?php echo isset($row['ID']) ? $row['ID'] : ''; ?>">Delete</a>
                 </td>
             </tr>
         <?php endwhile; ?>
     </table>
-        <a href = "../dashboard.php" >Back to Dashboard</a>
+
 </body>
 
 </html>

@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["checkoutTicket"])) {
     $seniorTickets = $_POST["seniorTickets"];
 
     // Fetch the animal show details to get the prices
-    $animalShowDetailsSql = "SELECT SeniorPrice, AdultPrice, ChildPrice FROM AnimalShow WHERE ID = ?";
+    $animalShowDetailsSql = "SELECT SeniorPrice, AdultPrice, ChildPrice FROM AnimalShow WHERE AnimalShowID = ?";
     $animalShowDetailsStmt = $conn->prepare($animalShowDetailsSql);
     $animalShowDetailsStmt->bind_param("i", $animalShowID);
     $animalShowDetailsStmt->execute();
@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["checkoutTicket"])) {
 }
 
 // Fetch and display animal shows
-$animalShowsSql = "SELECT ID, ShowsPerDay, SeniorPrice, AdultPrice, ChildPrice FROM AnimalShow";
+$animalShowsSql = "SELECT AnimalShowID, ID, ShowsPerDay, SeniorPrice, AdultPrice, ChildPrice FROM AnimalShow";
 $animalShowsResult = $conn->query($animalShowsSql);
 ?>
 
@@ -135,8 +135,8 @@ $animalShowsResult = $conn->query($animalShowsSql);
             <label for="animalShowID">Select Animal Show:</label>
             <select name="animalShowID" required>
                 <?php while ($animalShow = $animalShowsResult->fetch_assoc()) : ?>
-                    <option value="<?php echo $animalShow['ID']; ?>">
-                        <?php echo "Show ID: " . $animalShow['ID']; ?>
+                    <option value="<?php echo $animalShow['AnimalShowID']; ?>">
+                        <?php echo "Show ID: " . $animalShow['AnimalShowID']; ?>
                     </option>
                 <?php endwhile; ?>
             </select><br>
@@ -178,6 +178,7 @@ $animalShowsResult = $conn->query($animalShowsSql);
         <h3>Animal Shows Information</h3>
         <table border="1">
             <tr>
+                <th>ID</th>
                 <th>Show ID</th>
                 <th>Shows Per Day</th>
                 <th>Senior Price</th>
@@ -189,7 +190,7 @@ $animalShowsResult = $conn->query($animalShowsSql);
             <?php
             $animalShowsResult = $conn->query($animalShowsSql);
             while ($animalShow = $animalShowsResult->fetch_assoc()) :
-                $animalShowID = $animalShow['ID'];
+                $animalShowID = $animalShow['AnimalShowID'];
                 
                 // Fetch Attendance and Revenue from AnimalShowTickets
                 $animalShowTicketsSql = "SELECT SUM(Attendance) AS TotalAttendance, SUM(Revenue) AS TotalRevenue FROM AnimalShowTickets WHERE AnimalShowID = ?";
@@ -201,6 +202,7 @@ $animalShowsResult = $conn->query($animalShowsSql);
                 $animalShowTicketsStmt->close();
             ?>
                 <tr>
+                    <td><?php echo $animalShow['AnimalShowID']; ?></td>
                     <td><?php echo $animalShow['ID']; ?></td>
                     <td><?php echo $animalShow['ShowsPerDay']; ?></td>
                     <td><?php echo $animalShow['SeniorPrice']; ?></td>
@@ -211,6 +213,7 @@ $animalShowsResult = $conn->query($animalShowsSql);
                 </tr>
             <?php endwhile; ?>
         </table>
+        <a href = "../dashboard.php">Back to Dashboard</a>
     </div>
 </body>
 </html>
