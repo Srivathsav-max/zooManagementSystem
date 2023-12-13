@@ -154,7 +154,7 @@ if (isset($_POST['logout'])) {
         <ul>
             <li><a href="reportForm/report_form.php">Revenue Report</a></li>
             <li><a href="animalPopulationReport/animal_population_report_form.php">Animal Population Report</a></li>
-            <li><a href="topAttractions/top_attractions_report_form.php">Top Attractions Report</a></li>
+            <li><a href="topAttractions/top_attractions_report_form.php">Top 3 Attractions Report</a></li>
             <li><a href="bestDays/best_days_report_form.php">Top 5 Days Revenue Report</a></li>
             <li><a href="averageRevenue/average_revenue_report_form.php">Average Revenue Report</a></li>
         </ul>

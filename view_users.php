@@ -66,13 +66,14 @@ $result = $conn->query($sql);
 
         a {
             display: block;
-            width: 100px;
-            margin: 2px auto;
+            width: 200px;
+            margin: 10px auto; /* Reduced margin */
             padding: 10px 20px;
-            background-color: #3498db;
-            color: #fff;
+            background-color: rgba(144, 238, 144, 0.3); /* Light transparent green */
+            color: #333;
             text-decoration: none;
             border-radius: 5px;
+            text-align: center;
         }
 
         table {
@@ -84,7 +85,7 @@ $result = $conn->query($sql);
         }
 
         th, td {
-            padding: 12px;
+            padding: 8px;
             text-align: left;
             border-bottom: 1px solid #ddd;
         }
@@ -96,22 +97,6 @@ $result = $conn->query($sql);
 
         tr:hover {
             background-color: #f5f5f5;
-        }
-
-        ul {
-            list-style: none;
-            padding: 0;
-            text-align: center;
-        }
-
-        li {
-            display: inline-block;
-            margin-right: 20px;
-        }
-
-        li a {
-            text-decoration: none;
-            color: #333;
         }
     </style>
 </head>
