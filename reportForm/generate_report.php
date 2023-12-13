@@ -8,7 +8,7 @@ include '../includes/db_connection.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revenue Report</title>
+    <title>Combined Revenue and Tickets Report</title>
     <style>
         body {
             background-color: rgba(0, 128, 0, 0.2); /* Transparent green background */
@@ -46,35 +46,51 @@ include '../includes/db_connection.php';
         if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["generateReport"])) {
             $selectedDate = $_POST["selectedDate"];
 
-            // Assuming a RevenueEvents table with columns ID, DateTime, Revenue, TicketsSold
-            // You may need to join with other tables to get source details
-
-            $query = "SELECT DateTime, SUM(Revenue) AS TotalRevenue, SUM(TicketsSold) AS TotalTicketsSold
-                      FROM RevenueEvents
-                      WHERE DateTime = ?
-                      GROUP BY DateTime";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("s", $selectedDate);
-            $stmt->execute();
-            $result = $stmt->get_result();
+            // Combined Zoo Admission, Animal Show, and Daily Concession
+            $queryCombined = "
+            SELECT 
+                SUM(TotalAttendance) AS OverallAttendance,
+                SUM(TotalRevenue) AS OverallRevenue
+            FROM (
+                SELECT 
+                    SUM(Attendance) AS TotalAttendance,
+                    SUM(Revenue) AS TotalRevenue
+                FROM 
+                    zooadmissiontickets
+                WHERE 
+                    DATE(CheckoutTime) = ?
+                UNION
+                SELECT 
+                    SUM(Attendance) AS TotalAttendance,
+                    SUM(Revenue) AS TotalRevenue
+                FROM 
+                    animalshowtickets
+                WHERE 
+                    DATE(CheckoutTime) = ?
+                UNION
+                SELECT 
+                    0 AS TotalAttendance, -- Daily Concession doesn't have attendance
+                    SUM(Revenue) AS TotalRevenue
+                FROM 
+                    dailyconcessionrevenue
+                WHERE 
+                    DATE(SaleDate) = ?
+            ) AS CombinedResults";
+            $stmtCombined = $conn->prepare($queryCombined);
+            $stmtCombined->bind_param("sss", $selectedDate, $selectedDate, $selectedDate);
+            $stmtCombined->execute();
+            $resultCombined = $stmtCombined->get_result();
+            $rowCombined = $resultCombined->fetch_assoc();
 
             // Display the report
-            echo "<h2>Revenue Report for $selectedDate</h2>";
+            echo "<h2>Combined Revenue and Tickets Report for $selectedDate</h2>";
             echo "<table>";
-            echo "<tr><th>Date</th><th>Total Revenue</th><th>Total Tickets Sold</th></tr>";
-
-            while ($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>{$row['DateTime']}</td>";
-                echo "<td>{$row['TotalRevenue']}</td>";
-                echo "<td>{$row['TotalTicketsSold']}</td>";
-                echo "</tr>";
-            }
-
+            echo "<tr><th>Category</th><th>Total Attendance</th><th>Total Revenue</th></tr>";
+            echo "<tr><td>Combined Revenue and Tickets</td><td>{$rowCombined['OverallAttendance']}</td><td>{$rowCombined['OverallRevenue']}</td></tr>";
             echo "</table>";
             echo "<a href='report_form.php'>Back to Report Form</a>";
 
-            $stmt->close();
+            $stmtCombined->close();
         } else {
             echo "<p>No report generated. Please go back to the <a href='report_form.php'>Report Form</a>.</p>";
         }
